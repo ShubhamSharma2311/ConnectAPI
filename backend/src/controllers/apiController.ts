@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import Api from "../models/Api";
 import { z } from "zod";
 import mongoose from "mongoose";
+import { generateEmbedding } from "../services/geminiService";
+
 // Define Zod schema for API validation
 const apiSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters long"),
@@ -91,8 +93,14 @@ export const createAPI = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const newApi = new Api(validationResult.data);
+    const { name, description, category, price, usage, documentationUrl } = validationResult.data;
+
+    // 🔹 Generate vector embedding for the API description
+    const embedding = await generateEmbedding(description);
+
+    const newApi = new Api({ name, description, category, price, usage, documentationUrl, embedding });
     await newApi.save();
+
     res.status(201).json(newApi);
   } catch (error: any) {
     console.error("🔥 Error creating API:", error);
@@ -140,5 +148,69 @@ export const deleteAPI = async (req: Request, res: Response): Promise<void> => {
     res.json({ message: "API deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting API" });
+  }
+};
+
+export const suggestAPIs = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { useCase } = req.body;
+
+    if (!useCase) {
+      res.status(400).json({ message: "Use case is required" });
+      return;
+    }
+
+    // Generate embedding for the user's use case
+    const useCaseVector = await generateEmbedding(useCase);
+
+    // Perform similarity search using MongoDB's $vectorSearch (requires MongoDB Atlas Vector Search)
+    const matchedAPIs = await Api.aggregate([
+      {
+        $vectorSearch: {
+          index: "apiVectorIndex", // Ensure this matches the index name in MongoDB
+          queryVector: useCaseVector,
+          path: "vector",
+          numCandidates: 5,
+          limit: 5,
+        },
+      },
+      {
+        $project: { name: 1, description: 1, category: 1, price: 1 },
+      },
+    ]);
+
+    res.json({ suggestions: matchedAPIs });
+  } catch (error) {
+    console.error("❌ Error generating API suggestions:", error);
+    res.status(500).json({ message: "Error generating API suggestions" });
+  }
+};
+
+export const addApi = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { name, description, category, price } = req.body;
+
+    // Validate required fields
+    if (!name || !description || !category || price === undefined) {
+      res.status(400).json({ error: "All fields are required" });
+      return;
+    }
+
+    // Generate embedding dynamically from the description
+    const embedding = await generateEmbedding(description);
+
+    if (!Array.isArray(embedding) || !embedding.every((num) => typeof num === "number")) {
+      res.status(500).json({ error: "Failed to generate embedding" });
+      return;
+    }
+
+    // Create and save new API entry
+    const newApi = new Api({ name, description, category, price, embedding });
+    await newApi.save();
+
+    res.status(201).json({ message: "API added successfully", newApi });
+  } catch (error) {
+    console.error("❌ Error in addApi:", error);
+    res.status(500).json({ error: "Failed to add API" });
   }
 };

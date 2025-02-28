@@ -1,40 +1,27 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-  throw new Error("❌ Missing GEMINI_API_KEY in environment variables");
+  throw new Error("GEMINI_API_KEY is missing from environment variables");
 }
 
 const genAI = new GoogleGenerativeAI(apiKey);
+const embeddingModel = genAI.getGenerativeModel({ model: "embedding-001" });
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-2.0-flash",
-});
-
-const generationConfig = {
-  temperature: 1,
-  topP: 0.95,
-  topK: 40,
-  maxOutputTokens: 8192,
-  responseMimeType: "text/plain",
-};
-
-/**
- * Generates a response using Gemini AI based on a given prompt.
- * @param {string} prompt - The input prompt for AI.
- * @returns {Promise<string>} - The generated AI response.
- */
-export const generateAIResponse = async (prompt: string): Promise<string> => {
+export async function generateEmbedding(text: string): Promise<number[]> {
   try {
-    const chatSession = model.startChat({
-      generationConfig,
-      history: [],
-    });
+    const result = await embeddingModel.embedContent(text); // Corrected function call
 
-    const result = await chatSession.sendMessage(prompt);
-    return result.response.text();
+    if (!result.embedding || !result.embedding.values) {
+      throw new Error("Embedding response is missing values.");
+    }
+
+    return result.embedding.values; // Extract the actual embedding array
   } catch (error) {
-    console.error("🔥 Error using Gemini API:", error);
-    throw new Error("Failed to generate AI response");
+    console.error("❌ Error generating embedding:", error);
+    throw new Error("Failed to generate embedding");
   }
-};
+}
