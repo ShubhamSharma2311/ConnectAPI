@@ -5,7 +5,11 @@ const apiSchema = new mongoose.Schema({
   description: { type: String, required: true },
   category: { type: String, required: true },
   price: { type: Number, required: true },
-  embedding: { type: [Number], required: true }, // Stores vector embeddings
+  usage: { type: String, required: false },
+  documentationUrl: { type: String, required: true },
+  endpoint: { type: String, required: true }, // Ensure this field exists
+  provider: { type: String, required: true }, // Ensure this field exists
+  embedding: { type: [Number], required: false }, // Vector embedding
 });
 
 const Api = mongoose.model("Api", apiSchema);

@@ -3,6 +3,9 @@ import Api from "../models/Api";
 import { z } from "zod";
 import mongoose from "mongoose";
 import { generateEmbedding } from "../services/geminiService";
+import API from "../models/Api";
+import { HydratedDocument } from "mongoose";
+
 
 // Define Zod schema for API validation
 const apiSchema = z.object({
@@ -12,7 +15,10 @@ const apiSchema = z.object({
   price: z.number().min(0, "Price must be a positive number"),
   usage: z.string(),
   documentationUrl: z.string().url("Invalid URL format"),
+  endpoint: z.string().url("Invalid endpoint URL format"), // Add this
+  provider: z.string().min(3, "Provider name must be at least 3 characters"), // Add this
 });
+
 
 // Get all APIs
 export const getAllAPIs = async (req: Request, res: Response) => {
@@ -90,18 +96,37 @@ export const createAPI = async (req: Request, res: Response): Promise<void> => {
         message: "Invalid data",
         errors: validationResult.error.format(),
       });
-      return;
+      return; // ✅ Only return to stop further execution, not return res.
     }
 
-    const { name, description, category, price, usage, documentationUrl } = validationResult.data;
+    const { name, description, category, price, usage, documentationUrl, endpoint, provider } =
+      validationResult.data;
+
+    // 🔹 Check for required fields without returning res
+    if (!endpoint || !provider) {
+      res.status(400).json({
+        message: "Missing required fields: endpoint and provider",
+      });
+      return; // ✅ Stop execution without returning res
+    }
 
     // 🔹 Generate vector embedding for the API description
     const embedding = await generateEmbedding(description);
 
-    const newApi = new Api({ name, description, category, price, usage, documentationUrl, embedding });
-    await newApi.save();
+    // 🔹 Create and save the API record
+    const newApi = await Api.create({
+      name,
+      description,
+      category,
+      price,
+      usage,
+      documentationUrl,
+      endpoint,
+      provider,
+      embedding,
+    });
 
-    res.status(201).json(newApi);
+    res.status(201).json(newApi); // ✅ Send response without returning it
   } catch (error: any) {
     console.error("🔥 Error creating API:", error);
     res.status(500).json({ message: "Error creating API", error: error.message });
@@ -212,5 +237,39 @@ export const addApi = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error("❌ Error in addApi:", error);
     res.status(500).json({ error: "Failed to add API" });
+  }
+};
+
+// Approve API
+export const approveAPI = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const api = await API.findByIdAndUpdate(id, { status: "approved" }, { new: true });
+
+    if (!api) {
+      res.status(404).json({ message: "API not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "API approved successfully", api });
+  } catch (error) {
+    res.status(500).json({ message: "Error approving API", error });
+  }
+};
+
+// Reject API
+export const rejectAPI = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const api = await API.findByIdAndUpdate(id, { status: "rejected" }, { new: true });
+
+    if (!api) {
+      res.status(404).json({ message: "API not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "API rejected successfully", api });
+  } catch (error) {
+    res.status(500).json({ message: "Error rejecting API", error });
   }
 };
