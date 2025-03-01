@@ -3,7 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db"; // Import the DB connection function
 import apiRoutes from "./routes/api";
-
+import adminRoutes from "./routes/admin";
 dotenv.config();
 
 const app = express();
@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api", apiRoutes);
+app.use("/admin", adminRoutes);
 
 // Start server only after DB connection
 const startServer = async () => {

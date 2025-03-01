@@ -7,7 +7,6 @@ import { z } from "zod";
 
 dotenv.config();
 
-// ✅ Zod Validation Schema
 const adminSchema = z.object({
   name: z.string().min(3),
   email: z.string().email(),
@@ -15,6 +14,7 @@ const adminSchema = z.object({
 });
 
 // ✅ Admin Signup
+// ✅ Admin Signup with JWT Token
 export const adminSignup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password } = adminSchema.parse(req.body);
@@ -26,18 +26,21 @@ export const adminSignup = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new admin
-    const newAdmin = new Admin({ name, email, password: hashedPassword });
+    // Create new admin (password will be hashed in pre-save hook)
+    const newAdmin = new Admin({ name, email, password });
     await newAdmin.save();
 
-    res.status(201).json({ message: "Admin registered successfully" });
+    // Generate JWT Token
+    const token = jwt.sign(
+      { id: newAdmin._id, email: newAdmin.email, role: newAdmin.role },
+      process.env.JWT_SECRET as string);
+
+    res.status(201).json({ message: "Admin registered successfully", token });
   } catch (error) {
-    res.status(400).json({ message: "Invalid input", error });
+    res.status(400).json({ message: "Invalid input", error: (error as Error).message });
   }
 };
+
 
 // ✅ Admin Login
 export const adminLogin = async (req: Request, res: Response): Promise<void> => {
@@ -58,9 +61,7 @@ export const adminLogin = async (req: Request, res: Response): Promise<void> => 
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: admin._id, role: "admin" }, process.env.JWT_SECRET as string, {
-      expiresIn: "2h",
-    });
+    const token = jwt.sign({ id: admin._id, role: "admin" }, process.env.JWT_SECRET as string);
 
     res.json({ message: "Login successful", token });
   } catch (error) {

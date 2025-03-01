@@ -10,19 +10,25 @@ import {
   approveAPI,
   rejectAPI, // New controllers
 } from "../controllers/apiController";
+import { verifyAdmin } from "../middleware/authMiddleware";
 
 const router = express.Router();
 
-router.get("/apis", getAllAPIs);
-router.post("/apis", createAPI);
+
+router.post("/apis", verifyAdmin, createAPI);
+router.put("/apis/:id", verifyAdmin, updateAPI);
+router.delete("/apis/:id", verifyAdmin, deleteAPI);
+router.post("/add", verifyAdmin, addApi);
+router.put("/apis/:id/approve", verifyAdmin, approveAPI);
+router.put("/apis/:id/reject", verifyAdmin, rejectAPI);
+
+
 router.get("/apis/:id", getAPIById);
-router.put("/apis/:id", updateAPI);
-router.delete("/apis/:id", deleteAPI);
+router.get("/apis", getAllAPIs);
 router.post("/suggest", suggestAPIs);
-router.post("/add", addApi);
 
 // Admin API Approval Routes
-router.put("/apis/:id/approve", approveAPI);
-router.put("/apis/:id/reject", rejectAPI);
+
+
 
 export default router;
