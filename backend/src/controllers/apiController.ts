@@ -72,7 +72,7 @@ export const getAPIById = async (req: Request, res: Response): Promise<void> => 
 
     console.log("Cleaned ID:", id);
 
-    const api = await Api.findById(new mongoose.Types.ObjectId(id));
+    const api = await Api.findById(id);
 
     if (!api) {
       res.status(404).json({ message: "API not found" });
@@ -165,14 +165,24 @@ export const updateAPI = async (req: Request, res: Response): Promise<void> => {
 // Delete API
 export const deleteAPI = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deletedApi = await Api.findByIdAndDelete(req.params.id);
+    let { id } = req.params;
+    id = id.trim(); // Remove unwanted whitespace
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ message: "Invalid API ID format" });
+      return;
+    }
+
+    const deletedApi = await Api.findByIdAndDelete(id);
     if (!deletedApi) {
       res.status(404).json({ message: "API not found" });
       return;
     }
+
     res.json({ message: "API deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting API" });
+    console.error("🔥 Error deleting API:", error);
+    res.status(500).json({ message: "Error deleting API", error: (error as Error).message });
   }
 };
 
