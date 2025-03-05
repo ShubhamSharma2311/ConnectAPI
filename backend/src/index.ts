@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db"; // Import the DB connection function
 import apiRoutes from "./routes/api";
 import adminRoutes from "./routes/admin";
+import userRoutes from "./routes/user"; 
 dotenv.config();
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api", apiRoutes);
 app.use("/admin", adminRoutes);
+app.use("/api/user", userRoutes);
 
 // Start server only after DB connection
 const startServer = async () => {
