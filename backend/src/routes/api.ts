@@ -10,7 +10,7 @@ import {
   approveAPI,
   rejectAPI, // New controllers
 } from "../controllers/apiController";
-import { verifyAdmin } from "../middleware/authMiddleware";
+import { verifyAdmin } from "../middleware/adminMiddleware";
 import { logApiUsage } from "../middleware/logApiUsage";
 
 const router = express.Router();
