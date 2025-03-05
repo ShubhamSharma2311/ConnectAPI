@@ -11,6 +11,7 @@ import {
   rejectAPI, // New controllers
 } from "../controllers/apiController";
 import { verifyAdmin } from "../middleware/authMiddleware";
+import { logApiUsage } from "../middleware/logApiUsage";
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.put("/apis/:id/approve", verifyAdmin, approveAPI);
 router.put("/apis/:id/reject", verifyAdmin, rejectAPI);
 
 
-router.get("/apis/:id", getAPIById);
+router.get("/apis/:id",logApiUsage, getAPIById);
 router.get("/apis", getAllAPIs);
 router.post("/suggest", suggestAPIs);
 

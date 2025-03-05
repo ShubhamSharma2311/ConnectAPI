@@ -10,6 +10,7 @@ const apiSchema = new mongoose.Schema({
   endpoint: { type: String, required: true }, // Ensure this field exists
   provider: { type: String, required: true }, // Ensure this field exists
   embedding: { type: [Number], required: false }, // Vector embedding
+  usageCount: { type: Number, default: 0 }, // ✅ Added this field
 });
 
 const Api = mongoose.model("Api", apiSchema);
