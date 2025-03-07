@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Admin from "../models/Admin";
 import jwt from "jsonwebtoken";
+import { z } from "zod";
+import dotenv from "dotenv";
 dotenv.config();
 
 const adminSchema = z.object({
