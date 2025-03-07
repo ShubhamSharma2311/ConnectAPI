@@ -1,10 +1,6 @@
 import { Request, Response } from "express";
 import Admin from "../models/Admin";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-import dotenv from "dotenv";
-import { z } from "zod";
-
 dotenv.config();
 
 const adminSchema = z.object({
@@ -26,10 +22,9 @@ export const adminSignup = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    // Create new admin (password will be hashed in pre-save hook)
-    const newAdmin = new Admin({ name, email, password });
-    await newAdmin.save();
-
+    // Create new admin
+    const newAdmin = await Admin.create({ name, email, password });
+    
     // Generate JWT Token
     const token = jwt.sign(
       { id: newAdmin._id, email: newAdmin.email, role: newAdmin.role },
@@ -41,7 +36,6 @@ export const adminSignup = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-
 // ✅ Admin Login
 export const adminLogin = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -49,13 +43,6 @@ export const adminLogin = async (req: Request, res: Response): Promise<void> => 
     const admin = await Admin.findOne({ email });
 
     if (!admin) {
-      res.status(401).json({ message: "Invalid credentials" });
-      return;
-    }
-
-    // Verify password
-    const isMatch = await bcrypt.compare(password, admin.password);
-    if (!isMatch) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
     }
