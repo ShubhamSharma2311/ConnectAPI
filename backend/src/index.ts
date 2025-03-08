@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api", apiRoutes);
 app.use("/admin", adminRoutes);
-app.use("/api/user", userRoutes);
+app.use("/user", userRoutes);
 
 // Start server only after DB connection
 const startServer = async () => {

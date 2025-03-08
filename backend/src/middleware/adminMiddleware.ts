@@ -29,6 +29,6 @@ export const verifyAdmin = (req: AuthRequest, res: Response, next: NextFunction)
     req.admin = decoded; // Store admin data in request object
     next(); // Proceed to next middleware or route handler
   } catch (error) {
-    res.status(400).json({ message: "Invalid token" });
+    res.status(400).json({ message: "Invalid admin" });
   }
 };
