@@ -15,9 +15,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Routes
-app.use("/api", apiRoutes);
-app.use("/admin", adminRoutes);
-app.use("/user", userRoutes);
+
+app.use("/app/admin", adminRoutes);
+app.use("/app/user", userRoutes);
 
 // Start server only after DB connection
 const startServer = async () => {

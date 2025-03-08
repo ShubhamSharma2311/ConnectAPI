@@ -103,7 +103,7 @@ export const searchAPIs = async (req: Request, res: Response): Promise<void> => 
 
     res.json({ message: "Relevant APIs found", apis: scoredAPIs });
   } catch (error) {
-    console.error("❌ Error searching APIs:", error);
+    console.error(" Error searching APIs:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
