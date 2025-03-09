@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // ✅ Define a Custom Request Type
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   admin?: { id: string; role: string }; // Extend Request with admin property
 }
 

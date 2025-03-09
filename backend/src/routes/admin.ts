@@ -7,7 +7,8 @@ import {
   updateAPI,
   deleteAPI,
   approveAPI,
-  rejectAPI, // New controllers
+  rejectAPI,
+  getMyApis// New controllers
 } from "../controllers/apiController";
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router.delete("/deleteApi/:id", verifyAdmin, deleteAPI);
 
 router.put("/apis/:id/approve", verifyAdmin, approveAPI);
 router.put("/apis/:id/reject", verifyAdmin, rejectAPI);
+router.get("/my-apis", verifyAdmin, getMyApis);
 // ✅ Protected Route Example
 router.get("/dashboard", verifyAdmin, (req: Request, res: Response) => {
   const authReq = req as any; // Cast req to 'any' to avoid TS errors

@@ -4,7 +4,7 @@ import { z } from "zod";
 import mongoose from "mongoose";
 import { generateEmbedding } from "../services/geminiService";
 import API from "../models/Api";
-
+import { AuthRequest } from "../middleware/adminMiddleware";
 
 
 // Define Zod schema for API validation
@@ -19,33 +19,26 @@ const apiSchema = z.object({
   provider: z.string().min(3, "Provider name must be at least 3 characters"), // Add this
 });
 
-export const createAPI = async (req: Request, res: Response): Promise<void> => {
+export const createAPI = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const validationResult = apiSchema.safeParse(req.body);
+    const { name, description, category, price, usage, documentationUrl, endpoint, provider } = req.body;
 
-    if (!validationResult.success) {
-      res.status(400).json({
-        message: "Invalid data",
-        errors: validationResult.error.format(),
-      });
-      return; // ✅ Only return to stop further execution, not return res.
+    if (!endpoint || !provider) {
+      res.status(400).json({ message: "Missing required fields: endpoint and provider" });
+      return;
     }
 
-    const { name, description, category, price, usage, documentationUrl, endpoint, provider } =
-      validationResult.data;
+    const adminId = req.admin?.id; // 🔹 Get Admin ID from middleware
 
-    // 🔹 Check for required fields without returning res
-    if (!endpoint || !provider) {
-      res.status(400).json({
-        message: "Missing required fields: endpoint and provider",
-      });
-      return; // ✅ Stop execution without returning res
+    if (!adminId) {
+      res.status(403).json({ message: "Unauthorized: Admin ID missing" });
+      return;
     }
 
     // 🔹 Generate vector embedding for the API description
     const embedding = await generateEmbedding(description);
 
-    // 🔹 Create and save the API record
+    // 🔹 Create and save the API record with adminId
     const newApi = await Api.create({
       name,
       description,
@@ -56,9 +49,10 @@ export const createAPI = async (req: Request, res: Response): Promise<void> => {
       endpoint,
       provider,
       embedding,
+      adminId, // ✅ Assign the admin ID
     });
 
-    res.status(201).json(newApi); // ✅ Send response without returning it
+    res.status(201).json(newApi);
   } catch (error: any) {
     console.error("🔥 Error creating API:", error);
     res.status(500).json({ message: "Error creating API", error: error.message });
@@ -198,5 +192,24 @@ export const rejectAPI = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({ message: "API rejected successfully", api });
   } catch (error) {
     res.status(500).json({ message: "Error rejecting API", error });
+  }
+};
+
+export const getMyApis = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const adminId = req.admin?.id; // ✅ Get Admin ID from middleware
+
+    if (!adminId) {
+      res.status(403).json({ message: "Unauthorized: Admin ID missing" });
+      return;
+    }
+
+    // 🔹 Fetch all APIs created by this admin
+    const myApis = await Api.find({ adminId });
+
+    res.status(200).json({ success: true, data: myApis });
+  } catch (error: any) {
+    console.error("🔥 Error fetching APIs:", error);
+    res.status(500).json({ message: "Error fetching APIs", error: error.message });
   }
 };
