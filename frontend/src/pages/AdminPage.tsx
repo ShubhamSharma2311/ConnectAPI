@@ -1,0 +1,217 @@
+import React, { useState } from "react";
+import axiosClient from "../api/axiosClient";
+import { Link , useNavigate} from "react-router-dom";
+
+const AdminListApiPage = () => {
+  // Simulated admin name; in a real app, fetch from database or global state.
+  const [adminName, setAdminName] = useState("Alice");
+  const [showSidebar, setShowSidebar] = useState(false);
+  const navigate = useNavigate();
+  
+  // Form state for API details (following your schema)
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    category: "",
+    price: "",
+    usage: "",
+    documentationUrl: "",
+    endpoint: "",
+    provider: "",
+  });
+  const [message, setMessage] = useState("");
+
+  // Toggle sidebar open/close
+  const toggleSidebar = () => {
+    setShowSidebar((prev) => !prev);
+  };
+
+  // Handle input changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Submit form and send POST request to create API
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      // Convert price to a number
+      const dataToSend = { ...formData, price: Number(formData.price) };
+      const res = await axiosClient.post("/admin/createApi", dataToSend);
+      setMessage(res.data.message || "API listed successfully!");
+      // Reset form
+      setFormData({
+        name: "",
+        description: "",
+        category: "",
+        price: "",
+        usage: "",
+        documentationUrl: "",
+        endpoint: "",
+        provider: "",
+      });
+    } catch (error: any) {
+      setMessage(
+        error.response?.data?.message || "Failed to list API. Please try again."
+      );
+    }
+  };
+
+  // Logout handler: remove token and redirect
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    navigate("/login", { replace: true });
+  };
+
+  return (
+    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white relative">
+      {/* Navbar */}
+      <nav className="w-full flex justify-between items-center p-4 fixed top-0 z-50 bg-blue-1000">
+        <div className="text-3xl font-bold">
+          <span className="text-yellow-300">Connect</span>
+          <span className="text-white">API</span>
+        </div>
+        <div className="flex items-center space-x-4">
+          <Link to="#" className="text-white hover:text-yellow-300">
+            My API
+          </Link>
+          <button
+            onClick={toggleSidebar}
+            className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl font-bold"
+          >
+            {adminName.charAt(0)}
+          </button>
+        </div>
+      </nav>
+
+      {/* Sidebar */}
+      {showSidebar && (
+        <div className="fixed top-0 right-0 h-100 w-64 bg-gray-900 bg-opacity-90 p-4 z-50 transform transition-transform duration-300">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-2xl font-bold text-white">{adminName}</span>
+            <button onClick={toggleSidebar} className="text-white text-2xl">
+              &times;
+            </button>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <div className="pt-5 pb-5">
+        <div
+          className="max-w-3xl mx-auto my-12 p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl overflow-y-block"
+          
+        >
+          {/* Heading */}
+          <h2 className="text-4xl font-bold text-black text-center mb-8">
+            List Your API Here
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* First Row: API Name & Category */}
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="API Name"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              />
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                placeholder="Category"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              />
+            </div>
+            {/* Second Row: Price & Usage */}
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                placeholder="Price"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              />
+              <input
+                type="text"
+                name="usage"
+                value={formData.usage}
+                onChange={handleChange}
+                placeholder="Usage (Optional)"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              />
+            </div>
+            {/* Third Row: Documentation URL & Endpoint */}
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="url"
+                name="documentationUrl"
+                value={formData.documentationUrl}
+                onChange={handleChange}
+                placeholder="Documentation URL"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              />
+              <input
+                type="text"
+                name="endpoint"
+                value={formData.endpoint}
+                onChange={handleChange}
+                placeholder="Endpoint"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              />
+            </div>
+            {/* Fourth Row: Provider (full width) */}
+            <div>
+              <input
+                type="text"
+                name="provider"
+                value={formData.provider}
+                onChange={handleChange}
+                placeholder="Provider"
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              />
+            </div>
+            {/* Description: Full width Textarea */}
+            <div>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="API Description  (Write a detail description of your API)"
+                rows={4}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              ></textarea>
+            </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-3 mt-4 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+            >
+              List API
+            </button>
+          </form>
+          {/* Message Div */}
+          <div className="mt-4 text-center text-lg text-yellow-300">{message}</div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminListApiPage;

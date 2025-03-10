@@ -1,9 +1,54 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axiosClient from "../api/axiosClient";
 
 const AuthPage = () => {
   const [isSignup, setIsSignup] = useState(true);
   const [role, setRole] = useState("user");
+  const [name, setName] = useState(""); // Name field for signup
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (isSignup && password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    // Determine endpoint based on signup/login and role
+    let endpoint = "";
+    if (isSignup) {
+      endpoint = role === "admin" ? "/admin/signup" : "/user/signup";
+    } else {
+      endpoint = role === "admin" ? "/admin/login" : "/user/login";
+    }
+
+    try {
+      // For signup, include name; for login, send only email and password.
+      const payload = isSignup
+        ? { name, email, password, role }
+        : { email, password, role };
+
+      // Send POST request to the correct endpoint
+      await axiosClient.post(endpoint, payload);
+
+      // Redirect based on role after success
+      if (role === "admin") {
+        navigate("/admin-page");
+      } else {
+        navigate("/user-page");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Authentication failed");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center px-4">
@@ -41,36 +86,66 @@ const AuthPage = () => {
           </div>
         </div>
 
-        {/* Input Fields */}
-        <div className="space-y-4">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name field appears only during signup */}
+          {isSignup && (
+            <input
+              type="text"
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          )}
           <input
             type="email"
             className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
             placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
             className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
             placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           {isSignup && (
             <input
               type="password"
               className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
           )}
-        </div>
 
-        {/* Submit Button with Darker Gradient */}
-        <button className="w-full mt-6 py-3 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl">
-          {isSignup ? "Sign Up" : "Log In"} as {role.charAt(0).toUpperCase() + role.slice(1)}
-        </button>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full mt-6 py-3 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+          >
+            {isSignup
+              ? `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`
+              : `Log In as ${role.charAt(0).toUpperCase() + role.slice(1)}`}
+          </button>
+        </form>
+
+        {error && (
+          <p className="text-center text-red-500 mt-4">
+            {error}
+          </p>
+        )}
 
         {/* Toggle between Signup/Login */}
         <p className="text-center text-black mt-4">
           {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button className="text-purple-400 font-semibold hover:underline" onClick={() => setIsSignup(!isSignup)}>
+          <button
+            className="text-purple-400 font-semibold hover:underline"
+            onClick={() => setIsSignup(!isSignup)}
+          >
             {isSignup ? "Log In" : "Sign Up"}
           </button>
         </p>

@@ -1,8 +1,18 @@
-
+import { Link } from "react-router-dom";
 
 const LearnMorePage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white flex flex-col items-center justify-center px-4">
+    <div>
+  
+  <nav className="w-full flex justify-between items-center p-4 fixed top-0 transition-all duration-300 bg-transparent hover:bg-opacity-90 backdrop-blur-md">
+        <div className="text-3xl font-bold">
+          <span className="text-yellow-300">Connect</span>
+          <span className="text-white">API</span>
+        </div>
+        
+      </nav>
+
+      <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white flex flex-col items-center justify-center px-4">
       <div className="max-w-3xl mt-24 px-4">
         <h1 className="text-5xl font-extrabold mb-6 text-center">
           Learn More About ConnectAPI
@@ -36,6 +46,8 @@ const LearnMorePage = () => {
         </div>
       </div>
     </div>
+    </div>
+    
   );
 };
 

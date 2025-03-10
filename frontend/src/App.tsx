@@ -2,8 +2,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
 import LandingPage from './pages/LandingPage'
-import AuthPage from './pages/authPage'
+import AuthPage from './pages/AuthPage'
 import LearnMorePage from './pages/LearnMorePage'
+import AdminListApiPage from './pages/AdminPage'
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,9 @@ const router = createBrowserRouter([
   },{
     path : '/learn-more',
     element : <LearnMorePage/>
+  },{
+    path : '/admin-page',
+    element : <AdminListApiPage/>
   }
 ])
 
