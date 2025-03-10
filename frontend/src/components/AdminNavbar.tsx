@@ -33,7 +33,7 @@ const AdminNavbar: React.FC = () => {
   };
 
   return (
-    <nav className="w-full flex justify-between items-center p-4 fixed top-0 z-50 bg-navy-blue">
+    <nav className="w-full flex justify-between items-center p-4 fixed top-0 z-50 bg-navy">
       <div className="text-3xl font-bold">
         <span className="text-yellow-300">Connect</span>
         <span className="text-white">API</span>

@@ -7,7 +7,7 @@ import LearnMorePage from './pages/LearnMorePage'
 import AdminHomePage from './pages/AdminHomePage'
 import AdminLayout from './layout/AdminLayout'
 import MyAPIs from './pages/MyApi'
-import AdminListApiPage from './pages/AdminPage'
+import AdminListApiPage from './pages/ListApi'
 
 const router = createBrowserRouter([
   {

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
-import { Link, useNavigate } from "react-router-dom";
 import {jwtDecode} from "jwt-decode";
 
 // Define an interface for the decoded admin token
@@ -12,8 +11,7 @@ interface AdminToken {
 
 const AdminListApiPage = () => {
   const [adminName, setAdminName] = useState("Alice");
-  const [showSidebar, setShowSidebar] = useState(false);
-  const navigate = useNavigate();
+ 
   
   // Decode token and set admin name
   useEffect(() => {
@@ -44,9 +42,7 @@ const AdminListApiPage = () => {
   const [message, setMessage] = useState("");
 
   // Toggle sidebar open/close
-  const toggleSidebar = () => {
-    setShowSidebar((prev) => !prev);
-  };
+  
 
   // Handle input changes
   const handleChange = (
@@ -87,49 +83,15 @@ const AdminListApiPage = () => {
   };
 
   // Logout handler: remove token and redirect
-  const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    navigate("/login", { replace: true });
-  };
+  
 
   return (
-    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-navy-blue to-purple text-white relative">
+    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-navy-blue to-purple-600 text-white relative">
       {/* Navbar */}
-      <nav className="w-full flex justify-between items-center p-4 fixed top-0 z-50 bg-blue-1000">
-        <div className="text-3xl font-bold">
-          <span className="text-yellow-300">Connect</span>
-          <span className="text-white">API</span>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Link to="#" className="text-white hover:text-yellow-300">
-            My API
-          </Link>
-          <button
-            onClick={toggleSidebar}
-            className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl font-bold"
-          >
-            {adminName.charAt(0)}
-          </button>
-        </div>
-      </nav>
+      
 
       {/* Sidebar */}
-      {showSidebar && (
-        <div className="fixed top-0 right-0 h-full w-64 bg-gray-900 bg-opacity-90 p-4 z-50 transform transition-transform duration-300">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-2xl font-bold text-white">{adminName}</span>
-            <button onClick={toggleSidebar} className="text-white text-2xl">
-              &times;
-            </button>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="w-full py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Logout
-          </button>
-        </div>
-      )}
+      
 
       {/* Main Content */}
       <div className="pt-5 pb-5">
