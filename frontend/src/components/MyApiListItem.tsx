@@ -1,5 +1,5 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 export interface APIData {
   _id: string;
   name: string;
@@ -27,8 +27,11 @@ const MyApiListItem: React.FC<MyApiListItemProps> = ({
   onEdit,
   onDelete,
 }) => {
+  
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white bg-opacity-20 backdrop-blur-md rounded-2xl shadow-lg mb-4 transition-all duration-300">
+    <div className="bg-white bg-opacity-20 text-black backdrop-blur-md rounded-2xl shadow-lg mb-4 transition-all duration-300">
       {/* Header (Always visible) */}
       <div
         className="px-4 py-3 cursor-pointer flex justify-between items-center"
@@ -83,16 +86,20 @@ const MyApiListItem: React.FC<MyApiListItemProps> = ({
           <p className="mb-2">
             <strong>Provider:</strong> {api.provider}
           </p>
-          <div className="flex justify-around mt-4">
+          <div className="flex justify-center mt-4 gap-10">
             <button
-              onClick={() => onEdit(api)}
-              className="px-4 py-2 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+              onClick={() =>{ onEdit(api)
+                navigate(`update-api/${api._id}`, {state : {api}})
+              }}
+              className="px-6 py-2 bg-red-500 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl hover:cursor-pointer" 
             >
               Edit
             </button>
             <button
-              onClick={() => onDelete(api._id)}
-              className="px-4 py-2 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+              onClick={() => {onDelete(api._id)
+                navigate(`delete-api/${api._id}`)
+              }}
+              className="px-4 py-2 bg-gray-800 text-white text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl hover:cursor-pointer"
             >
               Delete
             </button>

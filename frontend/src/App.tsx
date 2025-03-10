@@ -8,6 +8,8 @@ import AdminHomePage from './pages/AdminHomePage'
 import AdminLayout from './layout/AdminLayout'
 import MyAPIs from './pages/MyApi'
 import AdminListApiPage from './pages/ListApi'
+import MyApiLayout from './layout/MyApiLayout'
+import EditApiPage from './pages/UpdateApi'
 
 const router = createBrowserRouter([
   {
@@ -32,7 +34,14 @@ const router = createBrowserRouter([
       element : <AdminHomePage/>
     },{
       path : 'my-apis',
-      element : <MyAPIs/>
+      element : <MyApiLayout/>,
+      children : [{
+        path : '',
+        element : <MyAPIs/>
+      },{
+        path : 'update-api/:id',
+        element : <EditApiPage/>
+      }]
     },{
       path : 'create-api',
       element : <AdminListApiPage/>

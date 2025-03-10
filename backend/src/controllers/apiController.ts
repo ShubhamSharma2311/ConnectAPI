@@ -115,16 +115,25 @@ export const updateAPI = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const updatedApi = await Api.findByIdAndUpdate(
-      id,
-      req.body,
-      { new: true, runValidators: true } // Ensure validation runs
-    );
+    const existingApi = await Api.findById(id);
 
-    if (!updatedApi) {
+    if (!existingApi) {
       res.status(404).json({ message: "API not found" });
       return;
     }
+
+    let updatedFields = req.body;
+
+    // 🔹 Check if the description is updated and regenerate embeddings
+    if (updatedFields.description && updatedFields.description !== existingApi.description) {
+      const newEmbedding = await generateEmbedding(updatedFields.description);
+      updatedFields.embedding = newEmbedding;
+    }
+
+    const updatedApi = await Api.findByIdAndUpdate(id, updatedFields, {
+      new: true,
+      runValidators: true,
+    });
 
     res.json(updatedApi);
   } catch (error) {
