@@ -4,6 +4,9 @@ import './App.css'
 import LandingPage from './pages/LandingPage'
 import AuthPage from './pages/AuthPage'
 import LearnMorePage from './pages/LearnMorePage'
+import AdminHomePage from './pages/AdminHomePage'
+import AdminLayout from './layout/AdminLayout'
+import MyAPIs from './pages/MyApi'
 import AdminListApiPage from './pages/AdminPage'
 
 const router = createBrowserRouter([
@@ -22,8 +25,19 @@ const router = createBrowserRouter([
     path : '/learn-more',
     element : <LearnMorePage/>
   },{
-    path : '/admin-page',
-    element : <AdminListApiPage/>
+    path : '/admin/',
+    element : <AdminLayout/>,
+    children : [{
+      path : "",
+      element : <AdminHomePage/>
+    },{
+      path : 'my-apis',
+      element : <MyAPIs/>
+    },{
+      path : 'create-api',
+      element : <AdminListApiPage/>
+    }]
+    
   }
 ])
 

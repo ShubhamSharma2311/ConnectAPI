@@ -30,32 +30,30 @@ const AuthPage = () => {
       endpoint = role === "admin" ? "/admin/login" : "/user/login";
     }
 
+    // For signup, include name; for login, send only email and password.
+    const payload = isSignup ? { name, email, password } : { email, password };
+
     try {
-      // For signup, include name; for login, send only email and password.
-      // Note: We remove the 'role' property from the payload, as the backend expects only {name, email, password} (for signup)
-      const payload = isSignup ? { name, email, password } : { email, password };
-
-      // Send POST request to the correct endpoint
       const res = await axiosClient.post(endpoint, payload);
-
-      // Get the token from the response
       const token = res.data.token;
 
-      // Store the token under a role-specific key in localStorage
+      // Store the token under a role-specific key
       if (role === "admin") {
         localStorage.setItem("adminToken", token);
-        navigate("/admin-page");
+        navigate("/admin");
       } else {
         localStorage.setItem("userToken", token);
         navigate("/user-page");
       }
     } catch (err: any) {
+      // Log the full backend error response for debugging
+      console.error("Error from backend:", err.response?.data);
       setError(err.response?.data?.message || "Authentication failed");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-navy to-purple flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-r from-navy-blue to-purple flex items-center justify-center px-4">
       {/* Glassmorphism Card */}
       <div className="bg-white bg-opacity-20 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[400px] border border-white/30">
         {/* Header */}
