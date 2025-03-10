@@ -19,7 +19,7 @@ export const verifyAdmin = (req: AuthRequest, res: Response, next: NextFunction)
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string; role: string };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string; role: string , name: string };
 
     if (decoded.role !== "admin") {
       res.status(403).json({ message: "Forbidden. You do not have admin access." });

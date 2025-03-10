@@ -1,13 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
-import { Link , useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
+
+// Define an interface for the decoded admin token
+interface AdminToken {
+  id: string;
+  role: string;
+  name: string;
+}
 
 const AdminListApiPage = () => {
-  // Simulated admin name; in a real app, fetch from database or global state.
   const [adminName, setAdminName] = useState("Alice");
   const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
   
+  // Decode token and set admin name
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      try {
+        const decoded = jwtDecode<AdminToken>(token);
+        if (decoded && decoded.name) {
+          setAdminName(decoded.name);
+        }
+      } catch (error) {
+        console.error("Error decoding token", error);
+      }
+    }
+  }, []);
+
   // Form state for API details (following your schema)
   const [formData, setFormData] = useState({
     name: "",
@@ -41,10 +63,11 @@ const AdminListApiPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Convert price to a number
+      // Convert price to a number and prepare data
       const dataToSend = { ...formData, price: Number(formData.price) };
       const res = await axiosClient.post("/admin/createApi", dataToSend);
       setMessage(res.data.message || "API listed successfully!");
+      
       // Reset form
       setFormData({
         name: "",
@@ -70,7 +93,7 @@ const AdminListApiPage = () => {
   };
 
   return (
-    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 text-white relative">
+    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-navy-blue to-purple text-white relative">
       {/* Navbar */}
       <nav className="w-full flex justify-between items-center p-4 fixed top-0 z-50 bg-blue-1000">
         <div className="text-3xl font-bold">
@@ -92,7 +115,7 @@ const AdminListApiPage = () => {
 
       {/* Sidebar */}
       {showSidebar && (
-        <div className="fixed top-0 right-0 h-100 w-64 bg-gray-900 bg-opacity-90 p-4 z-50 transform transition-transform duration-300">
+        <div className="fixed top-0 right-0 h-full w-64 bg-gray-900 bg-opacity-90 p-4 z-50 transform transition-transform duration-300">
           <div className="flex justify-between items-center mb-4">
             <span className="text-2xl font-bold text-white">{adminName}</span>
             <button onClick={toggleSidebar} className="text-white text-2xl">
@@ -111,8 +134,8 @@ const AdminListApiPage = () => {
       {/* Main Content */}
       <div className="pt-5 pb-5">
         <div
-          className="max-w-3xl mx-auto my-12 p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl overflow-y-block"
-          
+          className="max-w-3xl mx-auto my-12 p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl overflow-y-auto hide-scrollbar"
+          style={{ height: "calc(100vh - 100px)" }}
         >
           {/* Heading */}
           <h2 className="text-4xl font-bold text-black text-center mb-8">
@@ -193,7 +216,7 @@ const AdminListApiPage = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="API Description  (Write a detail description of your API)"
+                placeholder="API Description (Write a detailed description of your API)"
                 rows={4}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               ></textarea>

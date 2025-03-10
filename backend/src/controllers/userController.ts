@@ -24,7 +24,7 @@ export const userSignup = async (req: Request, res: Response): Promise<void> => 
 
     // Generate JWT Token
     const token = jwt.sign(
-      { id: newUser._id }, 
+      { id: newUser._id , name: newUser.name }, 
       process.env.JWT_SECRET as string, 
       { expiresIn: "7d" }
     );
@@ -51,7 +51,7 @@ export const userLogin = async (req: Request, res: Response): Promise<void> => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
+    const token = jwt.sign({ id: user._id , name : user.name }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
 
     res.json({ message: "Login successful", token });
   } catch (error) {

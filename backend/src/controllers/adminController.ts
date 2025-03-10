@@ -29,7 +29,7 @@ export const adminSignup = async (req: Request, res: Response): Promise<void> =>
     
     // Generate JWT Token
     const token = jwt.sign(
-      { id: newAdmin._id, email: newAdmin.email, role: newAdmin.role },
+      { id: newAdmin._id, email: newAdmin.email, role: newAdmin.role , name: newAdmin.name },
       process.env.JWT_SECRET as string);
 
     res.status(201).json({ message: "Admin registered successfully", token });
@@ -44,13 +44,13 @@ export const adminLogin = async (req: Request, res: Response): Promise<void> => 
     const { email, password } = req.body;
     const admin = await Admin.findOne({ email });
 
-    if (!admin) {
+    if (!admin || admin.password !== password) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: admin._id, role: "admin" }, process.env.JWT_SECRET as string);
+    const token = jwt.sign({ id: admin._id, role: "admin", name : admin.name }, process.env.JWT_SECRET as string);
 
     res.json({ message: "Login successful", token });
   } catch (error) {
