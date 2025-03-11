@@ -43,7 +43,7 @@ const AuthPage = () => {
         navigate("/admin",{replace:true});  
       } else {
         localStorage.setItem("userToken", token);
-        navigate("/user-page",{replace:true});
+        navigate("/user",{replace:true});
       }
     } catch (err: any) {
       // Log the full backend error response for debugging

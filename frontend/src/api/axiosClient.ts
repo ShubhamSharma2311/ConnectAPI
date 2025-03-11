@@ -11,4 +11,13 @@ import axios from "axios";
     return config;
   });
 
+  axiosClient.interceptors.request.use((config) => {
+    const token = localStorage.getItem("userToken");
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  });
+  
+
   export default axiosClient;

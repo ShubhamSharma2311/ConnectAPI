@@ -10,6 +10,7 @@ import MyAPIs from './pages/MyApi'
 import AdminListApiPage from './pages/ListApi'
 import MyApiLayout from './layout/MyApiLayout'
 import EditApiPage from './pages/UpdateApi'
+import UserPage from './userPages/Main'
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,9 @@ const router = createBrowserRouter([
       element : <AdminListApiPage/>
     }]
     
+  },{
+    path : '/user',
+    element: <UserPage/>
   }
 ])
 
