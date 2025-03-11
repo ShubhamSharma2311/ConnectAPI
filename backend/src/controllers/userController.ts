@@ -92,7 +92,7 @@ export const searchAPIs = async (req: Request, res: Response): Promise<void> => 
     const allAPIs = await Api.find({ embedding: { $exists: true, $ne: null } });
 
     // 4️⃣ Calculate similarity scores, filter by threshold, sort and slice
-    const threshold = 0.7; // Only return APIs with similarity above this value
+    const threshold = 0.7255; // Only return APIs with similarity above this value
     const scoredAPIs = allAPIs
       .map(api => ({
         ...api.toObject(),

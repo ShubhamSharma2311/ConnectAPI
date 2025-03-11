@@ -34,21 +34,24 @@ const UserPage: React.FC = () => {
   }, []);
 
   const handleSearch = async (query: string) => {
+    // Clear previous results immediately when a new search is initiated
+    setSearchResults([]);
     setLoading(true);
     setSearchError("");
     setSearchMessage("");
     try {
       const res = await axiosClient.post("/user/search", { query });
       console.log("Search response:", res.data);
-      // Expecting response structure: { message: "...", apis: [ ... ] }
+      // Expected response structure: { message: "...", apis: [ ... ] }
       if (res.data && Array.isArray(res.data.apis)) {
         if (res.data.apis.length === 0) {
           setSearchMessage(res.data.message || "No APIs found.");
         } else {
           setSearchResults(res.data.apis);
+          setSearchMessage("");
         }
       } else {
-        setSearchResults([]);
+        setSearchMessage(res.data.message || "No APIs found.");
       }
     } catch (err: any) {
       console.error("Search error:", err.response?.data?.message || err.message);
@@ -100,7 +103,7 @@ const UserPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="w-full p-4 bg-gray-800 text-center">
-        <p>© 2025 ConnectAPI. All rights reserved.</p>
+        <p>© 2025 ConnectAPI. Created by Shubham Sharma.</p>
       </footer>
     </div>
   );

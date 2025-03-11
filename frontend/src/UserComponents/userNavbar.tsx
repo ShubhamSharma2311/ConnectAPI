@@ -41,7 +41,7 @@ const UserNavbar: React.FC = () => {
       <div className="relative">
         <button
           onClick={() => setDropdownVisible(!dropdownVisible)}
-          className="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-xl font-bold focus:outline-none"
+          className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl font-bold focus:outline-none hover:cursor-pointer text-white"
         >
           {userName.charAt(0)}
         </button>

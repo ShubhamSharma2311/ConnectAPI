@@ -25,7 +25,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       />
       <button
         onClick={handleSearch}
-        className="ml-3 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-300 to-purple-300 text-white font-bold shadow-md hover:bg-red-500 transition"
+        className="ml-3 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-300 to-purple-300 text-white font-bold shadow-md hover:cursor-pointer transition "
       >
         Search
       </button>
