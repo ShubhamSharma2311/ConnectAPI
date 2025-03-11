@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
-import MyApiListItem, { APIData } from "../components/MyApiListItem";
-import DeleteConfirmationModal from "../components/DeleteConformation";
+import MyApiListItem, { APIData } from "../Admincomponents/MyApiListItem";
+import DeleteConfirmationModal from "../Admincomponents/DeleteConformation";
 
 const MyAPIs: React.FC = () => {
   const [apis, setApis] = useState<APIData[]>([]);
