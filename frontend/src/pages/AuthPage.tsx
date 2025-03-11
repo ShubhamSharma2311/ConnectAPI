@@ -40,10 +40,10 @@ const AuthPage = () => {
       // Store the token under a role-specific key
       if (role === "admin") {
         localStorage.setItem("adminToken", token);
-        navigate("/admin");
+        navigate("/admin",{replace:true});  
       } else {
         localStorage.setItem("userToken", token);
-        navigate("/user-page");
+        navigate("/user-page",{replace:true});
       }
     } catch (err: any) {
       // Log the full backend error response for debugging

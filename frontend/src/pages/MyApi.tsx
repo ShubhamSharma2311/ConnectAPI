@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
 import MyApiListItem, { APIData } from "../components/MyApiListItem";
+import DeleteConfirmationModal from "../components/DeleteConformation";
 
 const MyAPIs: React.FC = () => {
   const [apis, setApis] = useState<APIData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const fetchApis = async () => {
     try {
       const res = await axiosClient.get("/admin/my-apis");
       console.log("Response from /admin/my-apis:", res.data);
-      // Extract API array from res.data.data
       if (res.data && res.data.success && Array.isArray(res.data.data)) {
         setApis(res.data.data);
       } else {
@@ -34,14 +35,32 @@ const MyAPIs: React.FC = () => {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  // Edit functionality remains unchanged.
   const handleEdit = (api: APIData) => {
     console.log("Edit API:", api);
-    // Implement navigation to the edit page or open a modal with api details.
+    // Your existing edit navigation logic (already implemented in MyApiListItem)
   };
 
-  const handleDelete = (id: string) => {
-    console.log("Delete API with id:", id);
-    // Implement deletion functionality (e.g., sending a DELETE request)
+  // When the delete button is clicked, set the deleteId to show the confirmation modal.
+  const handleDeleteClick = (id: string) => {
+    setDeleteId(id);
+  };
+
+  // On confirming deletion, send a DELETE request and update state.
+  const confirmDelete = async () => {
+    if (!deleteId) return;
+    try {
+      await axiosClient.delete(`/admin/deleteApi/${deleteId}`);
+      setApis((prev) => prev.filter((api) => api._id !== deleteId));
+      setDeleteId(null);
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to delete API");
+      setDeleteId(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setDeleteId(null);
   };
 
   return (
@@ -62,10 +81,19 @@ const MyAPIs: React.FC = () => {
               isExpanded={expandedId === api._id}
               onToggle={() => toggleExpanded(api._id)}
               onEdit={handleEdit}
-              onDelete={handleDelete}
+              onDelete={handleDeleteClick}
             />
           ))}
         </div>
+      )}
+
+      {/* Render the delete confirmation modal if deleteId is set */}
+      {deleteId && (
+        <DeleteConfirmationModal
+          message="Are you sure you want to delete this API? This action cannot be undone."
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
       )}
     </div>
   );

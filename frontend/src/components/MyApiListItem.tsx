@@ -27,7 +27,6 @@ const MyApiListItem: React.FC<MyApiListItemProps> = ({
   onEdit,
   onDelete,
 }) => {
-  
   const navigate = useNavigate();
 
   return (
@@ -88,17 +87,16 @@ const MyApiListItem: React.FC<MyApiListItemProps> = ({
           </p>
           <div className="flex justify-center mt-4 gap-10">
             <button
-              onClick={() =>{ onEdit(api)
-                navigate(`update-api/${api._id}`, {state : {api}})
+              onClick={() => {
+                onEdit(api);
+                navigate(`update-api/${api._id}`, { state: { api } });
               }}
-              className="px-6 py-2 bg-red-500 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl hover:cursor-pointer" 
+              className="px-6 py-2 bg-red-500 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl hover:cursor-pointer"
             >
               Edit
             </button>
             <button
-              onClick={() => {onDelete(api._id)
-                navigate(`delete-api/${api._id}`, {state : {id :api._id}})
-              }}
+              onClick={() => onDelete(api._id)}
               className="px-4 py-2 bg-gray-800 text-white text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl hover:cursor-pointer"
             >
               Delete
