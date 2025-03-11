@@ -97,7 +97,7 @@ const MyApiListItem: React.FC<MyApiListItemProps> = ({
             </button>
             <button
               onClick={() => {onDelete(api._id)
-                navigate(`delete-api/${api._id}`)
+                navigate(`delete-api/${api._id}`, {state : {id :api._id}})
               }}
               className="px-4 py-2 bg-gray-800 text-white text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl hover:cursor-pointer"
             >
