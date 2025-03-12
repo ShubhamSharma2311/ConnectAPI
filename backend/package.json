@@ -29,9 +29,6 @@
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
-  },
-   "scripts": {
-  "start": "node index.js",
-  "dev": "nodemon index.js"
-}
+  }
+   
 }
