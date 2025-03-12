@@ -1,7 +1,11 @@
 import axios from "axios";
 
- const axiosClient = axios.create({
-  baseURL: "https://connectapi-tn9w.onrender.com"})
+
+const axiosClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL
+});
+
+
 
   axiosClient.interceptors.request.use((config) => {
     const token = localStorage.getItem("adminToken"); // or "userToken" depending on the role
