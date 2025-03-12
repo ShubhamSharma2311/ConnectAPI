@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axiosClient from "../api/axiosClient";
 import {jwtDecode} from "jwt-decode";
 import UserNavbar from "../UserComponents/userNavbar";
@@ -19,6 +19,7 @@ const UserPage: React.FC = () => {
   const [searchMessage, setSearchMessage] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  // Decode the user token once on mount
   useEffect(() => {
     const token = localStorage.getItem("userToken");
     if (token) {
@@ -33,7 +34,8 @@ const UserPage: React.FC = () => {
     }
   }, []);
 
-  const handleSearch = async (query: string) => {
+  // Wrap the search function to ensure stable reference
+  const handleSearch = useCallback(async (query: string) => {
     // Clear previous results immediately when a new search is initiated
     setSearchResults([]);
     setLoading(true);
@@ -42,7 +44,7 @@ const UserPage: React.FC = () => {
     try {
       const res = await axiosClient.post("/user/search", { query });
       console.log("Search response:", res.data);
-      // Expected response structure: { message: "...", apis: [ ... ] }
+      // Expected response: { message: "...", apis: [ ... ] }
       if (res.data && Array.isArray(res.data.apis)) {
         if (res.data.apis.length === 0) {
           setSearchMessage(res.data.message || "No APIs found.");
@@ -60,11 +62,12 @@ const UserPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const toggleExpanded = (id: string) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
+  // Wrap the toggle function to prevent unnecessary re-renders
+  const toggleExpanded = useCallback((id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white flex flex-col">

@@ -19,13 +19,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
       <input
         type="text"
         placeholder="Search for APIs..."
-        className="w-96 px-4 py-2 bg-white rounded-lg text-black focus:outline-none shadow-lg "
+        className="w-96 px-4 py-2 bg-white rounded-lg text-black focus:outline-none shadow-lg"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
       <button
         onClick={handleSearch}
-        className="ml-3 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-300 to-purple-300 text-white font-bold shadow-md hover:cursor-pointer transition "
+        className="ml-3 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-300 to-purple-300 text-white font-bold shadow-md hover:cursor-pointer transition"
       >
         Search
       </button>

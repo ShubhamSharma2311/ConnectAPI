@@ -1,5 +1,4 @@
 import React from "react";
-// import { useNavigate } from "react-router-dom";
 
 export interface APIData {
   _id: string;
@@ -14,16 +13,12 @@ export interface APIData {
 }
 
 interface UserApiListItemProps {
-  api?: APIData;  // made optional so we can check for empty data
+  api?: APIData; // made optional so we can check for empty data
   isExpanded: boolean;
   onToggle: () => void;
 }
 
-const UserApiListItem: React.FC<UserApiListItemProps> = ({
-  api,
-  isExpanded,
-  onToggle,
-}) => {
+const UserApiListItem: React.FC<UserApiListItemProps> = ({ api, isExpanded, onToggle }) => {
   // If no API data is provided, display a fallback message.
   if (!api || !api._id) {
     return (
@@ -43,7 +38,9 @@ const UserApiListItem: React.FC<UserApiListItemProps> = ({
         <h3 className="text-xl font-bold text-black">{api.name}</h3>
         <div className="text-gray-800">
           <svg
-            className={`w-6 h-6 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}
+            className={`w-6 h-6 transition-transform duration-300 ${
+              isExpanded ? "rotate-180" : ""
+            }`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -84,4 +81,4 @@ const UserApiListItem: React.FC<UserApiListItemProps> = ({
   );
 };
 
-export default UserApiListItem;
+export default React.memo(UserApiListItem);
