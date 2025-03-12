@@ -1,7 +1,7 @@
 import axios from "axios";
 
  const axiosClient = axios.create({
-  baseURL: "http://localhost:5000/app"})
+  baseURL: "https://connectapi-tn9w.onrender.com"})
 
   axiosClient.interceptors.request.use((config) => {
     const token = localStorage.getItem("adminToken"); // or "userToken" depending on the role
