@@ -86,7 +86,7 @@ const AdminListApiPage = () => {
   
 
   return (
-    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-navy-blue to-purple-600 text-white relative">
+    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-gray-900 to-gray-700 text-white relative">
       {/* Navbar */}
       
 

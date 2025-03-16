@@ -53,11 +53,11 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-navy-blue to-purple flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 flex items-center justify-center px-4">
       {/* Glassmorphism Card */}
-      <div className="bg-white bg-opacity-20 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[400px] border border-white/30">
+      <div className="bg-gray-200 bg-opacity-20 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[400px] border border-white/30">
         {/* Header */}
-        <h2 className="text-3xl font-extrabold text-center text-white mb-6">
+        <h2 className="text-3xl font-extrabold text-center text-gray-700 mb-6">
           {isSignup ? "Create an Account" : "Welcome Back"}
         </h2>
 
@@ -65,7 +65,7 @@ const AuthPage = () => {
         <div className="relative w-full flex items-center justify-center mb-6">
           <div className="bg-gray-600 w-full flex rounded-full p-1 relative">
             <span
-              className={`absolute left-0 top-0 h-full w-1/2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 transition-all duration-300 ${
+              className={`absolute left-0 top-0 h-full w-1/2 rounded-full bg-gradient-to-r from-blue-600 to-gray-400 transition-all duration-300 ${
                 role === "admin" ? "translate-x-full" : "translate-x-0"
               }`}
             ></span>
@@ -94,7 +94,7 @@ const AuthPage = () => {
           {isSignup && (
             <input
               type="text"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               placeholder="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -102,14 +102,14 @@ const AuthPage = () => {
           )}
           <input
             type="email"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -117,7 +117,7 @@ const AuthPage = () => {
           {isSignup && (
             <input
               type="password"
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -127,7 +127,7 @@ const AuthPage = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full mt-6 py-3 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+            className="w-full mt-6 py-3 bg-gradient-to-r from-blue-600 to-gray-400 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
           >
             {isSignup
               ? `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`

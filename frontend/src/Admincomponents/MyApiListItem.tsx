@@ -69,6 +69,9 @@ const MyApiListItem: React.FC<MyApiListItemProps> = ({
             <strong>Usage:</strong> {api.usage || "N/A"}
           </p>
           <p className="mb-2">
+            <strong>Description:</strong> {api.description }
+          </p>
+          <p className="mb-2">
             <strong>Documentation:</strong>{" "}
             <a
               href={api.documentationUrl}

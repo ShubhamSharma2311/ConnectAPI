@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+
 
 const LearnMorePage = () => {
   return (
@@ -12,7 +12,7 @@ const LearnMorePage = () => {
         
       </nav>
 
-      <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white flex flex-col items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white flex flex-col items-center justify-center px-4">
       <div className="max-w-3xl mt-24 px-4">
         <h1 className="text-5xl font-extrabold mb-6 text-center">
           Learn More About ConnectAPI

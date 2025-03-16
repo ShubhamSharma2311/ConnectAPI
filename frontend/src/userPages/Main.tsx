@@ -34,7 +34,7 @@ const UserPage: React.FC = () => {
     }
   }, []);
 
-  // Wrap the search function to ensure stable reference
+  // Wrap the search function to ensure a stable reference
   const handleSearch = useCallback(async (query: string) => {
     // Clear previous results immediately when a new search is initiated
     setSearchResults([]);
@@ -90,7 +90,8 @@ const UserPage: React.FC = () => {
             <p className="text-center mt-4">{searchMessage}</p>
           )}
           {searchResults.length > 0 && (
-            <div className="mt-4 space-y-4">
+            // Grid layout: 1 column on extra-small screens, 2 columns on small, 4 columns on medium+
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {searchResults.map((api) => (
                 <UserApiListItem
                   key={api._id}

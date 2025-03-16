@@ -27,7 +27,7 @@ const AdminHomePage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-navy-blue to-purple-600 text-white flex flex-col items-center justify-center pt-10">
+    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white flex flex-col items-center justify-center pt-10">
       <h1 className="text-5xl font-bold mb-8">Welcome, {adminName}!</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Card 1: List New API */}
@@ -64,7 +64,7 @@ const AdminHomePage: React.FC = () => {
           <div className="flex justify-center">
             <button
               onClick={() => navigate("/admin/my-apis")}
-              className="w-full mt-6 py-3 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+              className="w-full mt-6 py-3 bg-gradient-to-r from-blue-600 to-gray-400 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
             >
               View APIs
             </button>

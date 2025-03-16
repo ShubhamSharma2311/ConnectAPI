@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-navy-blue to-purple text-white flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white flex flex-col items-center justify-center">
       {/* Navbar */}
       <nav className="w-full flex justify-between items-center p-4 fixed top-0 transition-all duration-300 bg-transparent hover:bg-opacity-90 backdrop-blur-md">
         <div className="text-3xl font-bold">
