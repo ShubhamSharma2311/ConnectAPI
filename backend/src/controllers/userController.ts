@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import User from "../models/User";
 import Api from "../models/Api";
 import { generateUserEmbedding } from "../services/embeddingService";
-
+import axios from "axios";
 dotenv.config();
 
 // ✅ User Signup
@@ -92,7 +92,7 @@ export const searchAPIs = async (req: Request, res: Response): Promise<void> => 
     const allAPIs = await Api.find({ embedding: { $exists: true, $ne: null } });
 
     // 4️⃣ Calculate similarity scores, filter by threshold, sort and slice
-    const threshold = 0.7255; // Only return APIs with similarity above this value
+    const threshold = 0.7; // Only return APIs with similarity above this value
     const scoredAPIs = allAPIs
       .map(api => ({
         ...api.toObject(),
@@ -105,6 +105,49 @@ export const searchAPIs = async (req: Request, res: Response): Promise<void> => 
     res.json({ message: "Relevant APIs found", apis: scoredAPIs });
   } catch (error) {
     console.error("Error searching APIs:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const trendingAPI = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const trendingApis = await Api.find().sort({ usageCount: -1 }).limit(10);
+    res.status(200).json(trendingApis);
+  } catch (error) {
+    console.error("Error fetching trending APIs:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const tryAPI = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Extract the API id from the URL parameters
+    const { id } = req.params;
+
+    // Find the API details in the database
+    const apiData = await Api.findById(id);
+    if (!apiData) {
+      res.status(404).json({ message: "API not found" });
+      return;
+    }
+
+    // Increment the usage count for this API
+    await Api.findByIdAndUpdate(id, { $inc: { usageCount: 1 } });
+
+    // Forward the request to the actual external API endpoint
+    // This example assumes a GET request; adjust method, headers, etc. as needed
+    const externalResponse = await axios({
+      method: req.method,              // Use the same HTTP method as the incoming request
+      url: apiData.endpoint,           // External API endpoint stored in your DB
+      headers: req.headers,            // Optionally forward headers (filter if needed)
+      params: req.query,               // Forward query parameters (for GET requests)
+      data: req.body,                  // For POST/PUT requests, forward the body
+    });
+
+    // Return the external API's response to the client
+    res.status(externalResponse.status).json(externalResponse.data);
+  } catch (error: any) {
+    console.error("Error in tryAPI endpoint:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
