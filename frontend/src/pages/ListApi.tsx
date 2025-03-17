@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosClient from "../api/axiosClient";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 // Define an interface for the decoded admin token
 interface AdminToken {
@@ -9,10 +9,9 @@ interface AdminToken {
   name: string;
 }
 
-const AdminListApiPage = () => {
+const AdminListApiPage: React.FC = () => {
   const [adminName, setAdminName] = useState("Alice");
- 
-  
+
   // Decode token and set admin name
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
@@ -41,13 +40,8 @@ const AdminListApiPage = () => {
   });
   const [message, setMessage] = useState("");
 
-  // Toggle sidebar open/close
-  
-
   // Handle input changes
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -82,37 +76,28 @@ const AdminListApiPage = () => {
     }
   };
 
-  // Logout handler: remove token and redirect
-  
-
   return (
-    <div className="min-h-screen overflow-hidden bg-gradient-to-r from-gray-900 to-gray-700 text-white relative">
-      {/* Navbar */}
-      
-
-      {/* Sidebar */}
-      
-
+    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white relative">
       {/* Main Content */}
       <div className="pt-5 pb-5">
         <div
-          className="max-w-3xl mx-auto my-12 p-8 bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl overflow-y-auto hide-scrollbar"
+          className="max-w-2xl mx-auto my-12 p-4 sm:p-6 md:p-8 bg-gray-300 bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl overflow-y-auto hide-scrollbar"
           style={{ height: "calc(100vh - 100px)" }}
         >
           {/* Heading */}
-          <h2 className="text-4xl font-bold text-black text-center mb-8">
+          <h2 className="text-3xl sm:text-4xl md:text-4xl font-bold text-black text-center mb-6">
             List Your API Here
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* First Row: API Name & Category */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="API Name"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               />
               <input
                 type="text"
@@ -120,18 +105,18 @@ const AdminListApiPage = () => {
                 value={formData.category}
                 onChange={handleChange}
                 placeholder="Category"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               />
             </div>
             {/* Second Row: Price & Usage */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="number"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="Price"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               />
               <input
                 type="text"
@@ -139,18 +124,18 @@ const AdminListApiPage = () => {
                 value={formData.usage}
                 onChange={handleChange}
                 placeholder="Usage (Optional)"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               />
             </div>
             {/* Third Row: Documentation URL & Endpoint */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="url"
                 name="documentationUrl"
                 value={formData.documentationUrl}
                 onChange={handleChange}
                 placeholder="Documentation URL"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               />
               <input
                 type="text"
@@ -158,7 +143,7 @@ const AdminListApiPage = () => {
                 value={formData.endpoint}
                 onChange={handleChange}
                 placeholder="Endpoint"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               />
             </div>
             {/* Fourth Row: Provider (full width) */}
@@ -169,7 +154,7 @@ const AdminListApiPage = () => {
                 value={formData.provider}
                 onChange={handleChange}
                 placeholder="Provider"
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               />
             </div>
             {/* Description: Full width Textarea */}
@@ -180,7 +165,7 @@ const AdminListApiPage = () => {
                 onChange={handleChange}
                 placeholder="API Description (Write a detailed description of your API)"
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
               ></textarea>
             </div>
             {/* Submit Button */}

@@ -70,7 +70,7 @@ const UserPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-500 to-purple-600 text-white flex flex-col">
+    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white flex flex-col">
       {/* Navbar */}
       <UserNavbar />
 
@@ -91,7 +91,7 @@ const UserPage: React.FC = () => {
           )}
           {searchResults.length > 0 && (
             // Grid layout: 1 column on extra-small screens, 2 columns on small, 4 columns on medium+
-            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="gap-5 mt-5">
               {searchResults.map((api) => (
                 <UserApiListItem
                   key={api._id}
