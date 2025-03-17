@@ -1,7 +1,7 @@
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import './App.css'
-import LandingPage from './pages/LandingPage'
+import LandingPage from './pages/landingpage'
 import AuthPage from './pages/AuthPage'
 import LearnMorePage from './pages/LearnMorePage'
 import AdminHomePage from './pages/AdminHomePage'
