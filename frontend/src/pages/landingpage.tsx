@@ -23,7 +23,7 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      
       <div className="text-center max-w-3xl mt-20 md:mt-24 px-4">
         <h1 className="text-3xl md:text-5xl font-extrabold mb-4 md:mb-6">Discover and Integrate APIs Effortlessly</h1>
         <p className="text-sm md:text-base text-gray-200 mb-4 md:mb-6">
