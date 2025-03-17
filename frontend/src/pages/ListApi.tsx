@@ -1,33 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axiosClient from "../api/axiosClient";
-import { jwtDecode } from "jwt-decode";
-
-// Define an interface for the decoded admin token
-interface AdminToken {
-  id: string;
-  role: string;
-  name: string;
-}
 
 const AdminListApiPage: React.FC = () => {
-  const [adminName, setAdminName] = useState("Alice");
-
-  // Decode token and set admin name
-  useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (token) {
-      try {
-        const decoded = jwtDecode<AdminToken>(token);
-        if (decoded && decoded.name) {
-          setAdminName(decoded.name);
-        }
-      } catch (error) {
-        console.error("Error decoding token", error);
-      }
-    }
-  }, []);
-
-  // Form state for API details (following your schema)
+  // Form state for API details
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -57,7 +32,7 @@ const AdminListApiPage: React.FC = () => {
       const dataToSend = { ...formData, price: Number(formData.price) };
       const res = await axiosClient.post("/admin/createApi", dataToSend);
       setMessage(res.data.message || "API listed successfully!");
-      
+
       // Reset form
       setFormData({
         name: "",
@@ -78,7 +53,6 @@ const AdminListApiPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white relative">
-      {/* Main Content */}
       <div className="pt-5 pb-5">
         <div
           className="max-w-2xl mx-auto my-12 p-4 sm:p-6 md:p-8 bg-gray-300 bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl overflow-y-auto hide-scrollbar"
