@@ -1,8 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
+import Loader from "../pages/loader";
 
-const AuthPage = () => {
+const AuthPage: React.FC = () => {
   const [isSignup, setIsSignup] = useState(true);
   const [role, setRole] = useState("user");
   const [name, setName] = useState(""); // Name field for signup
@@ -10,18 +11,19 @@ const AuthPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
+  
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-
+    
     if (isSignup && password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
-
+    
     // Determine endpoint based on signup/login and role
     let endpoint = "";
     if (isSignup) {
@@ -29,28 +31,37 @@ const AuthPage = () => {
     } else {
       endpoint = role === "admin" ? "/admin/login" : "/user/login";
     }
-
+    
     // For signup, include name; for login, send only email and password.
     const payload = isSignup ? { name, email, password } : { email, password };
-
+    
+    // Show loader when request is made
+    setIsLoading(true);
+    
     try {
       const res = await axiosClient.post(endpoint, payload);
       const token = res.data.token;
-
-      // Store the token under a role-specific key
+      
+      // Store the token under a role-specific key and navigate accordingly
       if (role === "admin") {
         localStorage.setItem("adminToken", token);
-        navigate("/admin",{replace:true});  
+        navigate("/admin", { replace: true });
       } else {
         localStorage.setItem("userToken", token);
-        navigate("/user",{replace:true});
+        navigate("/user", { replace: true });
       }
     } catch (err: any) {
-      // Log the full backend error response for debugging
       console.error("Error from backend:", err.response?.data);
       setError(err.response?.data?.message || "Authentication failed");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  // Render loader while waiting for backend response
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 flex items-center justify-center px-4">
