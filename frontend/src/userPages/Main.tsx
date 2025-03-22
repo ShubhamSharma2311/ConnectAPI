@@ -107,7 +107,7 @@ const UserPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="w-full p-4 bg-gray-800 text-center">
-        <p>© 2025 ConnectAPI. Created by Shubham Sharma.</p>
+        <p>© 2025 ConnectAPI. Created by Shubham/Harsh.</p>
       </footer>
     </div>
   );
