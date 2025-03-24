@@ -52,26 +52,25 @@ const AdminListApiPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white relative">
-      <div className="pt-5 pb-5">
+    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 text-white p-4 sm:p-6 md:p-8">
+      <div className="max-w-4xl mx-auto my-6 sm:my-8 md:my-10">
         <div
-          className="max-w-2xl mx-auto my-12 p-4 sm:p-6 md:p-8 bg-gray-300 bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl overflow-y-auto hide-scrollbar"
-          style={{ height: "calc(100vh - 100px)" }}
+          className="bg-gray-300 bg-opacity-20 backdrop-blur-lg rounded-2xl shadow-xl p-4 sm:p-6 md:p-8"
         >
           {/* Heading */}
-          <h2 className="text-3xl sm:text-4xl md:text-4xl font-bold text-black text-center mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black text-center mb-4 sm:mb-6">
             List Your API Here
           </h2>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* First Row: API Name & Category */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="API Name"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               />
               <input
                 type="text"
@@ -79,18 +78,18 @@ const AdminListApiPage: React.FC = () => {
                 value={formData.category}
                 onChange={handleChange}
                 placeholder="Category"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               />
             </div>
             {/* Second Row: Price & Usage */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="number"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
                 placeholder="Price"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               />
               <input
                 type="text"
@@ -98,18 +97,18 @@ const AdminListApiPage: React.FC = () => {
                 value={formData.usage}
                 onChange={handleChange}
                 placeholder="Usage (Optional)"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               />
             </div>
             {/* Third Row: Documentation URL & Endpoint */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <input
                 type="url"
                 name="documentationUrl"
                 value={formData.documentationUrl}
                 onChange={handleChange}
                 placeholder="Documentation URL"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               />
               <input
                 type="text"
@@ -117,7 +116,7 @@ const AdminListApiPage: React.FC = () => {
                 value={formData.endpoint}
                 onChange={handleChange}
                 placeholder="Endpoint"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               />
             </div>
             {/* Fourth Row: Provider (full width) */}
@@ -128,7 +127,7 @@ const AdminListApiPage: React.FC = () => {
                 value={formData.provider}
                 onChange={handleChange}
                 placeholder="Provider"
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               />
             </div>
             {/* Description: Full width Textarea */}
@@ -138,20 +137,22 @@ const AdminListApiPage: React.FC = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="API Description (Write a detailed description of your API)"
-                rows={4}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none"
+                rows={3}
+                className="w-full px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-md focus:ring-2 focus:ring-purple-200 focus:outline-none text-sm sm:text-base"
               ></textarea>
             </div>
             {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-3 mt-4 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
-            >
-              List API
-            </button>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="w-full sm:w-2/3 md:w-1/2 py-2 sm:py-3 mt-2 sm:mt-3 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-base sm:text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+              >
+                List API
+              </button>
+            </div>
           </form>
           {/* Message Div */}
-          <div className="mt-4 text-center text-lg text-yellow-300">{message}</div>
+          <div className="mt-3 sm:mt-4 text-center text-base sm:text-lg text-yellow-300">{message}</div>
         </div>
       </div>
     </div>
