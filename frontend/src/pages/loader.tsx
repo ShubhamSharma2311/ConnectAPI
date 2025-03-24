@@ -3,7 +3,11 @@ import React, { useEffect, useState } from 'react';
 const messages = [
   "Initializing server...",
   "Fetching resources...",
+  "Loading dependencies...",
+  "Configuring settings...",
+  "Preparing environment...",
   "Almost ready, please wait...",
+  "Running final checks...",
   "Finalizing startup..."
 ];
 
