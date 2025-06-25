@@ -45,7 +45,7 @@ export const adminLogin = async (req: Request, res: Response): Promise<void> => 
     const admin = await Admin.findOne({ email });
 
     if (!admin || admin.password !== password) {
-      res.status(401).json({ message: "Invalid credentials" });
+      res.status(401).json({ message: "Invalid username or password " });
       return;
     }
 

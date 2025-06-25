@@ -46,7 +46,7 @@ export const userLogin = async (req: Request, res: Response): Promise<void> => {
     const user = await User.findOne({ email });
 
     if (!user || user.password !== password) {
-      res.status(401).json({ message: "Invalid credentials" });
+      res.status(401).json({ message: "Invalid username or password" });
       return;
     }
 
