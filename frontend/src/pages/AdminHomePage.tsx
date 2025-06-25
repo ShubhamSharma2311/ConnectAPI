@@ -44,7 +44,7 @@ const AdminHomePage: React.FC = () => {
           <div className="flex justify-center">
             <button
               onClick={() => navigate("/admin/create-api")}
-              className="w-full mt-3 sm:mt-6 py-2 sm:py-3 bg-gradient-to-r from-blue-300 to-purple-300 text-gray-800 text-sm sm:text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+              className="w-full mt-3 sm:mt-6 py-2 sm:py-3 bg-gradient-to-r  from-blue-600 to-gray-400 text-gray-800 text-sm sm:text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
             >
               Create API
             </button>
