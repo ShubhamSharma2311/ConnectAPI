@@ -70,7 +70,7 @@ const LandingPage = () => {
       <section className="min-h-screen flex flex-col items-center justify-center px-4 relative z-10">
         <div className={`text-center max-w-5xl transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {/* Hero Badge */}
-          <div className="inline-flex items-center px-4 py-2 mb-6 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30 backdrop-blur-sm">
+          <div className="inline-flex items-center px-4 py-2 mb-6 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full border border-purple-500/30 backdrop-blur-sm mt-40">
             <span className="text-sm font-medium text-purple-200">✨ AI-Powered API Discovery Platform</span>
           </div>
           
