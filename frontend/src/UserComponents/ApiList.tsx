@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 export interface APIData {
   _id: string;
@@ -19,7 +19,6 @@ interface UserApiListItemProps {
 }
 
 const UserApiListItem: React.FC<UserApiListItemProps> = ({ api, isExpanded, onToggle }) => {
-  const [isHovered, setIsHovered] = useState(false);
   
   if (!api || !api._id) {
     return (
@@ -66,8 +65,6 @@ const UserApiListItem: React.FC<UserApiListItemProps> = ({ api, isExpanded, onTo
       className={`group bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 mb-6 transition-all duration-500 cursor-pointer overflow-hidden ${
         isExpanded ? 'border-purple-400/50 shadow-lg shadow-purple-500/10' : 'hover:border-white/20 hover:bg-white/10'
       }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Header */}
       <div
