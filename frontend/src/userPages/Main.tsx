@@ -93,7 +93,7 @@ const UserPage: React.FC = () => {
       <UserNavbar />
 
       {/* Main Content */}
-      <main className="pt-20 p-4 flex-grow relative z-10">
+      <main className="pt-35 p-4 flex-grow relative z-10">
         {/* Hero Section */}
         <section className="text-center p-4 mb-8">
           <div className="max-w-4xl mx-auto">
