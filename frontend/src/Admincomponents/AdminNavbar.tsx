@@ -33,26 +33,26 @@ const AdminNavbar: React.FC = () => {
   };
 
   return (
-    <nav className="w-full flex justify-between items-center p-3 md:p-4 fixed top-0 z-50 bg-navy bg-fixed">
-      <div className="font-bold text-lg md:text-3xl">
-        <span className="text-yellow-300">Connect</span>
+    <nav className="w-full flex justify-between items-center p-6 fixed top-0 z-50 backdrop-blur-md bg-white/5 border-b border-white/10">
+      <div className="text-3xl font-bold tracking-tight">
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Connect</span>
         <span className="text-white">API</span>
       </div>
       <div className="relative">
         <button
           onClick={() => setDropdownVisible(!dropdownVisible)}
-          className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-200 flex items-center justify-center text-lg md:text-xl font-bold focus:outline-none"
+          className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-xl font-bold focus:outline-none hover:scale-105 transition-transform text-white"
         >
           {adminName.charAt(0)}
         </button>
         {dropdownVisible && (
-          <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded shadow-lg">
-            <div className="p-4 border-b">
-              <p className="font-semibold">{adminName}</p>
+          <div className="absolute right-0 mt-2 w-48 bg-white/10 backdrop-blur-md text-white rounded-xl shadow-2xl border border-white/20">
+            <div className="p-4 border-b border-white/20">
+              <p className="font-semibold text-white">{adminName}</p>
             </div>
             <button
               onClick={handleLogout}
-              className="w-full text-left p-4 text-red-600 hover:bg-gray-100"
+              className="w-full text-left p-4 text-red-400 hover:bg-white/10 transition-colors"
             >
               Logout
             </button>

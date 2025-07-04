@@ -64,11 +64,18 @@ const AuthPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-gray-900 to-gray-700 flex items-center justify-center px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center px-4 text-white relative overflow-hidden">
+      {/* Elegant Floating Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-br from-blue-500/10 to-indigo-600/10 rounded-full filter blur-3xl animate-float"></div>
+        <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-gradient-to-br from-indigo-500/8 to-purple-600/8 rounded-full filter blur-3xl animate-float animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-3/4 w-80 h-80 bg-gradient-to-br from-cyan-500/6 to-blue-600/6 rounded-full filter blur-3xl animate-float animation-delay-4000"></div>
+      </div>
+      
       {/* Glassmorphism Card */}
-      <div className="bg-gray-200 bg-opacity-20 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[400px] border border-white/30">
+      <div className="bg-white/5 backdrop-blur-md p-8 rounded-2xl shadow-2xl w-[400px] border border-white/10">
         {/* Header */}
-        <h2 className="text-3xl font-extrabold text-center text-gray-700 mb-6">
+        <h2 className="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-6">
           {isSignup ? "Create an Account" : "Welcome Back"}
         </h2>
 
@@ -138,7 +145,7 @@ const AuthPage: React.FC = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full mt-6 py-3 bg-gradient-to-r from-blue-600 to-gray-400 text-gray-800 text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
+            className="w-full mt-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-lg font-semibold rounded-lg shadow-lg transform transition-all hover:scale-105 hover:shadow-2xl"
           >
             {isSignup
               ? `Sign Up as ${role.charAt(0).toUpperCase() + role.slice(1)}`
@@ -153,7 +160,7 @@ const AuthPage: React.FC = () => {
         )}
 
         {/* Toggle between Signup/Login */}
-        <p className="text-center text-black mt-4">
+        <p className="text-center text-gray-200 mt-4">
           {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             className="text-purple-400 font-semibold hover:underline"
@@ -165,7 +172,7 @@ const AuthPage: React.FC = () => {
 
         {/* Back to Home */}
         <div className="text-center mt-4">
-          <Link to="/" className="text-purple-400 hover:underline">
+          <Link to="/" className="text-purple-300 hover:underline">
             Back to Home
           </Link>
         </div>
