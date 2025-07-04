@@ -198,7 +198,7 @@ const UserPage: React.FC = () => {
               <span className="text-gray-400">Discover. Integrate. Build.</span>
             </div>
             <div className="text-gray-400 text-sm">
-              © 2025 ConnectAPI. Crafted with ❤️ by Shubham & Harsh
+              © 2025 ConnectAPI. Crafted with ❤️ by Shubham
             </div>
           </div>
         </div>
