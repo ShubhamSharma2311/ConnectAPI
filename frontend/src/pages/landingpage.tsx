@@ -278,7 +278,7 @@ const LandingPage = () => {
                 Empowering developers to build better applications faster.
               </p>
               <div className="text-gray-400 text-sm">
-                © 2025 ConnectAPI. Crafted with ❤️ by Shubham & Harsh
+                © 2025 ConnectAPI. Crafted with ❤️ by Shubham 
               </div>
             </div>
             
