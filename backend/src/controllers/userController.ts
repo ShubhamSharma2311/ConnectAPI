@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/User";
 import Api from "../models/Api";
+import ApiInteraction from "../models/ApiInteraction";
+import UserBookmark from "../models/UserBookmark";
 import { generateUserEmbedding } from "../services/embeddingService";
 import axios from "axios";
 dotenv.config();
@@ -149,6 +151,160 @@ export const tryAPI = async (req: Request, res: Response): Promise<void> => {
   } catch (error: any) {
     console.error("Error in tryAPI endpoint:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// 📊 Track API Interactions
+export const trackApiInteraction = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user?.id;
+    const { apiId, interactionType, metadata } = req.body;
+
+    // Validate interaction type
+    const validTypes = ['view_docs', 'copy_endpoint', 'quick_integrate', 'bookmark', 'unbookmark'];
+    if (!validTypes.includes(interactionType)) {
+      res.status(400).json({ message: "Invalid interaction type" });
+      return;
+    }
+
+    // Check if API exists
+    const api = await Api.findById(apiId);
+    if (!api) {
+      res.status(404).json({ message: "API not found" });
+      return;
+    }
+
+    // Create interaction record
+    const interaction = new ApiInteraction({
+      userId,
+      apiId,
+      interactionType,
+      metadata: {
+        ...metadata,
+        userAgent: req.headers['user-agent'],
+        timestamp: new Date()
+      }
+    });
+
+    await interaction.save();
+
+    // Update API usage count for certain interactions
+    if (['view_docs', 'quick_integrate'].includes(interactionType)) {
+      await Api.findByIdAndUpdate(apiId, { $inc: { usageCount: 1 } });
+    }
+
+    res.status(201).json({ 
+      message: "Interaction tracked successfully",
+      redirectUrl: interactionType === 'view_docs' ? api.documentationUrl : null
+    });
+  } catch (error) {
+    console.error("Error tracking interaction:", error);
+    res.status(500).json({ message: "Failed to track interaction" });
+  }
+};
+
+// ⭐ Bookmark Management
+export const toggleBookmark = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user?.id;
+    const { apiId, note, tags } = req.body;
+
+    // Check if API exists
+    const api = await Api.findById(apiId);
+    if (!api) {
+      res.status(404).json({ message: "API not found" });
+      return;
+    }
+
+    // Check if bookmark already exists
+    const existingBookmark = await UserBookmark.findOne({ userId, apiId });
+
+    if (existingBookmark) {
+      // Remove bookmark
+      await UserBookmark.deleteOne({ userId, apiId });
+      
+      // Track unbookmark interaction
+      await new ApiInteraction({
+        userId,
+        apiId,
+        interactionType: 'unbookmark',
+        metadata: { userAgent: req.headers['user-agent'] }
+      }).save();
+
+      res.json({ message: "API removed from bookmarks", bookmarked: false });
+    } else {
+      // Add bookmark
+      const bookmark = new UserBookmark({ userId, apiId, note, tags });
+      await bookmark.save();
+      
+      // Track bookmark interaction
+      await new ApiInteraction({
+        userId,
+        apiId,
+        interactionType: 'bookmark',
+        metadata: { userAgent: req.headers['user-agent'] }
+      }).save();
+
+      res.json({ message: "API bookmarked successfully", bookmarked: true });
+    }
+  } catch (error) {
+    console.error("Error toggling bookmark:", error);
+    res.status(500).json({ message: "Failed to toggle bookmark" });
+  }
+};
+
+// 📚 Get User Bookmarks
+export const getUserBookmarks = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user?.id;
+    
+    const bookmarks = await UserBookmark.find({ userId })
+      .populate('apiId')
+      .sort({ createdAt: -1 });
+
+    res.json({ 
+      message: "Bookmarks retrieved successfully", 
+      bookmarks: bookmarks.map(bookmark => ({
+        ...bookmark.toObject(),
+        api: bookmark.apiId
+      }))
+    });
+  } catch (error) {
+    console.error("Error fetching bookmarks:", error);
+    res.status(500).json({ message: "Failed to fetch bookmarks" });
+  }
+};
+
+// 📈 Get User Interaction History
+export const getUserInteractionHistory = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user?.id;
+    const { limit = 50, offset = 0 } = req.query;
+    
+    const interactions = await ApiInteraction.find({ userId })
+      .populate('apiId')
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .skip(Number(offset));
+
+    const totalCount = await ApiInteraction.countDocuments({ userId });
+
+    res.json({ 
+      message: "Interaction history retrieved successfully", 
+      interactions: interactions.map(interaction => ({
+        ...interaction.toObject(),
+        api: interaction.apiId
+      })),
+      pagination: {
+        total: totalCount,
+        limit: Number(limit),
+        offset: Number(offset),
+        hasMore: Number(offset) + Number(limit) < totalCount
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching interaction history:", error);
+    res.status(500).json({ message: "Failed to fetch interaction history" });
   }
 };
 

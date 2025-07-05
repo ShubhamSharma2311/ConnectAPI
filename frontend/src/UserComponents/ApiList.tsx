@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axiosClient from "../api/axiosClient";
 
 export interface APIData {
   _id: string;
@@ -16,9 +17,67 @@ interface UserApiListItemProps {
   api?: APIData;
   isExpanded: boolean;
   onToggle: () => void;
+  searchQuery?: string;
+  position?: number;
 }
 
-const UserApiListItem: React.FC<UserApiListItemProps> = ({ api, isExpanded, onToggle }) => {
+const UserApiListItem: React.FC<UserApiListItemProps> = ({ 
+  api, 
+  isExpanded, 
+  onToggle, 
+  searchQuery, 
+  position 
+}) => {
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [trackingInProgress, setTrackingInProgress] = useState<string | null>(null);
+  
+  // Check bookmark status on mount
+  useEffect(() => {
+    checkBookmarkStatus();
+  }, [api?._id]);
+
+  const checkBookmarkStatus = async () => {
+    if (!api?._id) return;
+    try {
+      const response = await axiosClient.get('/user/bookmarks');
+      const isBookmarked = response.data.bookmarks.some(
+        (bookmark: any) => bookmark.apiId === api._id
+      );
+      setIsBookmarked(isBookmarked);
+    } catch (error) {
+      console.error('Error checking bookmark status:', error);
+    }
+  };
+
+  const trackInteraction = async (interactionType: string, additionalData?: any) => {
+    if (!api?._id) return;
+    
+    setTrackingInProgress(interactionType);
+    try {
+      const response = await axiosClient.post('/user/track-interaction', {
+        apiId: api._id,
+        interactionType,
+        metadata: {
+          searchQuery,
+          position,
+          sessionId: sessionStorage.getItem('sessionId') || (() => {
+            const sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            sessionStorage.setItem('sessionId', sessionId);
+            return sessionId;
+          })(),
+          ...additionalData
+        }
+      });
+      
+      // Return the response for further processing
+      return response.data;
+    } catch (error) {
+      console.error('Error tracking interaction:', error);
+    } finally {
+      setTrackingInProgress(null);
+    }
+  };
   
   if (!api || !api._id) {
     return (
@@ -28,15 +87,57 @@ const UserApiListItem: React.FC<UserApiListItemProps> = ({ api, isExpanded, onTo
     );
   }
 
-  const handleViewDocs = (e: React.MouseEvent) => {
+  const handleViewDocs = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    window.open(api.documentationUrl, "_blank");
+    
+    // Track the interaction first, then redirect
+    const trackResult = await trackInteraction('view_docs');
+    
+    // Open documentation
+    if (trackResult?.redirectUrl) {
+      window.open(trackResult.redirectUrl, "_blank");
+    } else {
+      window.open(api.documentationUrl, "_blank");
+    }
   };
 
-  const handleCopyEndpoint = (e: React.MouseEvent) => {
+  const handleCopyEndpoint = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigator.clipboard.writeText(api.endpoint);
-    // You could add a toast notification here
+    
+    try {
+      await navigator.clipboard.writeText(api.endpoint);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+      
+      // Track the copy interaction
+      await trackInteraction('copy_endpoint', { endpoint: api.endpoint });
+    } catch (error) {
+      console.error('Failed to copy endpoint:', error);
+    }
+  };
+
+  const handleQuickIntegrate = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // Track the interaction
+    await trackInteraction('quick_integrate');
+    
+    // TODO: Implement quick integration modal/functionality
+    alert(`Quick integration for ${api.name} - Feature coming soon!`);
+  };
+
+  const handleToggleBookmark = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    try {
+      const response = await axiosClient.post('/user/bookmark', {
+        apiId: api._id
+      });
+      
+      setIsBookmarked(response.data.bookmarked);
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+    }
   };
 
   const getCategoryIcon = (category: string) => {
@@ -159,29 +260,60 @@ const UserApiListItem: React.FC<UserApiListItemProps> = ({ api, isExpanded, onTo
               </div>
             </div>
             
+            {/* Copy Success Message */}
+            {copySuccess && (
+              <div className="mb-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg text-center">
+                <span className="text-green-400">✅ Endpoint copied to clipboard!</span>
+              </div>
+            )}
+            
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <button
                 onClick={handleViewDocs}
-                className="flex-1 group/btn px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 relative overflow-hidden"
+                disabled={trackingInProgress === 'view_docs'}
+                className="flex-1 group/btn px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 relative overflow-hidden disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
               >
                 <span className="relative z-10 flex items-center justify-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
+                  {trackingInProgress === 'view_docs' ? (
+                    <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                  )}
                   View Documentation
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300 origin-left"></div>
               </button>
               
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // Handle integrate action
-                }}
-                className="px-6 py-3 bg-white/10 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/20 border border-white/20 backdrop-blur-sm"
+                onClick={handleQuickIntegrate}
+                disabled={trackingInProgress === 'quick_integrate'}
+                className="px-6 py-3 bg-white/10 text-white font-semibold rounded-xl transition-all duration-300 hover:bg-white/20 border border-white/20 backdrop-blur-sm disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Quick Integrate
+                {trackingInProgress === 'quick_integrate' ? (
+                  <span className="flex items-center justify-center">
+                    <div className="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </span>
+                ) : (
+                  'Quick Integrate'
+                )}
+              </button>
+              
+              <button
+                onClick={handleToggleBookmark}
+                className={`px-4 py-3 font-semibold rounded-xl transition-all duration-300 border backdrop-blur-sm ${
+                  isBookmarked 
+                    ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30 hover:bg-yellow-500/30' 
+                    : 'bg-white/10 text-white border-white/20 hover:bg-white/20'
+                }`}
+                title={isBookmarked ? 'Remove from bookmarks' : 'Add to bookmarks'}
+              >
+                <svg className="w-5 h-5" fill={isBookmarked ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
               </button>
             </div>
           </div>

@@ -11,6 +11,9 @@ import AdminListApiPage from './pages/ListApi'
 import MyApiLayout from './layout/MyApiLayout'
 import EditApiPage from './pages/UpdateApi'
 import UserPage from './userPages/Main'
+import UserDashboard from './userPages/Dashboard'
+import BookmarksPage from './userPages/Bookmarks'
+import HistoryPage from './userPages/History'
 
 const router = createBrowserRouter([
   {
@@ -51,6 +54,15 @@ const router = createBrowserRouter([
   },{
     path : '/user',
     element: <UserPage/>
+  },{
+    path : '/user/dashboard',
+    element: <UserDashboard/>
+  },{
+    path : '/user/bookmarks',
+    element: <BookmarksPage/>
+  },{
+    path : '/user/history',
+    element: <HistoryPage/>
   }
 ])
 

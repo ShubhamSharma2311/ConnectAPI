@@ -18,6 +18,7 @@ const UserPage: React.FC = () => {
   const [searchError, setSearchError] = useState("");
   const [searchMessage, setSearchMessage] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [lastSearchQuery, setLastSearchQuery] = useState("");
 
   // Decode the user token once on mount
   useEffect(() => {
@@ -41,6 +42,7 @@ const UserPage: React.FC = () => {
     setLoading(true);
     setSearchError("");
     setSearchMessage("");
+    setLastSearchQuery(query); // Store the search query
     try {
       const res = await axiosClient.post("/user/search", { query });
       console.log("Search response:", res.data);
@@ -176,6 +178,8 @@ const UserPage: React.FC = () => {
                       api={api}
                       isExpanded={expandedId === api._id}
                       onToggle={() => toggleExpanded(api._id)}
+                      searchQuery={lastSearchQuery}
+                      position={index}
                     />
                   </div>
                 ))}

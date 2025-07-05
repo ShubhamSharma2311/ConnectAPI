@@ -1,11 +1,26 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const LandingPage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const navigate = useNavigate();
 
   useEffect(() => {
+    // Check if user is already logged in and redirect them
+    const userToken = localStorage.getItem("userToken");
+    const adminToken = localStorage.getItem("adminToken");
+    
+    if (userToken) {
+      navigate("/user", { replace: true });
+      return;
+    }
+    
+    if (adminToken) {
+      navigate("/admin", { replace: true });
+      return;
+    }
+    
     setIsVisible(true);
     
     const handleMouseMove = (e: MouseEvent) => {
@@ -14,7 +29,7 @@ const LandingPage = () => {
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 text-white relative">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axiosClient from "../api/axiosClient";
 import Loader from "../pages/loader";
@@ -16,6 +16,22 @@ const AuthPage: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const navigate = useNavigate();
+
+  // Auth guard - redirect if already logged in
+  useEffect(() => {
+    const userToken = localStorage.getItem("userToken");
+    const adminToken = localStorage.getItem("adminToken");
+    
+    if (userToken) {
+      navigate("/user", { replace: true });
+      return;
+    }
+    
+    if (adminToken) {
+      navigate("/admin", { replace: true });
+      return;
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
