@@ -11,40 +11,18 @@ interface AuthRequest extends Request {
 
 // ✅ Middleware to verify user authentication
 export const verifyUser = (req: AuthRequest, res: Response, next: NextFunction): void => {
-  const authHeader = req.header("Authorization");
-  console.log("Auth header:", authHeader);
-  
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ 
-      message: "Access Denied. No valid authorization header provided.",
-      expected: "Bearer <token>"
-    });
-    return;
-  }
+  const token = req.header("Authorization")?.split(" ")[1];
 
-  const token = authHeader.split(" ")[1];
-  
   if (!token) {
     res.status(401).json({ message: "Access Denied. No token provided." });
     return;
   }
 
-  if (!process.env.JWT_SECRET) {
-    console.error("JWT_SECRET is not defined in environment variables");
-    res.status(500).json({ message: "Server configuration error" });
-    return;
-  }
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET) as { id: string };
-    console.log("Token decoded successfully for user:", decoded.id);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string };
     req.user = decoded; // Store user data in request object
     next(); // Proceed to the next middleware or route handler
-  } catch (error: any) {
-    console.error("JWT verification error:", error.message);
-    res.status(400).json({ 
-      message: "Invalid token",
-      error: error.message
-    });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid token" });
   }
 };
