@@ -3,14 +3,13 @@ import {
   getAllAPIs, 
 } from "../controllers/apiController";
 import { logApiUsage } from "../middleware/logApiUsage";
-import { searchAPIs } from "../controllers/userController";
+import { searchAPIs, trendingAPI } from "../controllers/userController";
 
 const router = express.Router();
-router.get("/apis", getAllAPIs);
-router.post('/search', searchAPIs)
 
-// Admin API Approval Routes
-
-
+// Public API endpoints
+router.get("/all", getAllAPIs);
+router.get("/trending", trendingAPI);
+router.post('/search', searchAPIs);
 
 export default router;

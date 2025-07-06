@@ -11,13 +11,11 @@ import {
   getUserInteractionHistory 
 } from "../controllers/userController";
 import { verifyUser } from "../middleware/userMiddleware"; // Ensure authentication
-import apiRoutes from "./api";
 const router = express.Router();
 
 // User Authentication Routes
 router.post("/signup", userSignup);
 router.post("/login", userLogin);
-router.use("/api", apiRoutes);
 
 // API Search and Discovery
 router.post("/search", verifyUser, searchAPIs);

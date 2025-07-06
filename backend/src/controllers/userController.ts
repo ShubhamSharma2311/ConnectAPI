@@ -309,6 +309,13 @@ export const getUserInteractionHistory = async (req: Request, res: Response): Pr
     const userId = (req as any).user?.id;
     const { limit = 50, offset = 0 } = req.query;
     
+    console.log("Fetching interaction history for user:", userId);
+    
+    if (!userId) {
+      res.status(401).json({ message: "User not authenticated" });
+      return;
+    }
+    
     const interactions = await ApiInteraction.find({ userId })
       .populate('apiId')
       .sort({ createdAt: -1 })
@@ -316,6 +323,8 @@ export const getUserInteractionHistory = async (req: Request, res: Response): Pr
       .skip(Number(offset));
 
     const totalCount = await ApiInteraction.countDocuments({ userId });
+    
+    console.log("Found interactions:", interactions.length, "Total:", totalCount);
 
     res.json({ 
       message: "Interaction history retrieved successfully", 
@@ -330,9 +339,12 @@ export const getUserInteractionHistory = async (req: Request, res: Response): Pr
         hasMore: Number(offset) + Number(limit) < totalCount
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching interaction history:", error);
-    res.status(500).json({ message: "Failed to fetch interaction history" });
+    res.status(500).json({ 
+      message: "Failed to fetch interaction history",
+      error: error.message
+    });
   }
 };
 

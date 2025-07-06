@@ -56,6 +56,7 @@ app.use((req, res, next) => {
 
 app.use("/app/admin", adminRoutes);
 app.use("/app/user", userRoutes);
+app.use("/app/api", apiRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {
