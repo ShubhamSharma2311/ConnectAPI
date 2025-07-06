@@ -209,6 +209,18 @@ export const toggleBookmark = async (req: Request, res: Response): Promise<void>
     const userId = (req as any).user?.id;
     const { apiId, note, tags } = req.body;
 
+    console.log("Toggle bookmark - UserId:", userId, "ApiId:", apiId);
+
+    if (!userId) {
+      res.status(401).json({ message: "User not authenticated" });
+      return;
+    }
+
+    if (!apiId) {
+      res.status(400).json({ message: "API ID is required" });
+      return;
+    }
+
     // Check if API exists
     const api = await Api.findById(apiId);
     if (!api) {
@@ -218,6 +230,7 @@ export const toggleBookmark = async (req: Request, res: Response): Promise<void>
 
     // Check if bookmark already exists
     const existingBookmark = await UserBookmark.findOne({ userId, apiId });
+    console.log("Existing bookmark:", existingBookmark);
 
     if (existingBookmark) {
       // Remove bookmark
@@ -247,9 +260,12 @@ export const toggleBookmark = async (req: Request, res: Response): Promise<void>
 
       res.json({ message: "API bookmarked successfully", bookmarked: true });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error toggling bookmark:", error);
-    res.status(500).json({ message: "Failed to toggle bookmark" });
+    res.status(500).json({ 
+      message: "Failed to toggle bookmark",
+      error: error.message
+    });
   }
 };
 
@@ -258,9 +274,18 @@ export const getUserBookmarks = async (req: Request, res: Response): Promise<voi
   try {
     const userId = (req as any).user?.id;
     
+    console.log("Fetching bookmarks for user:", userId);
+    
+    if (!userId) {
+      res.status(401).json({ message: "User not authenticated" });
+      return;
+    }
+    
     const bookmarks = await UserBookmark.find({ userId })
       .populate('apiId')
       .sort({ createdAt: -1 });
+
+    console.log("Found bookmarks:", bookmarks.length);
 
     res.json({ 
       message: "Bookmarks retrieved successfully", 
@@ -269,9 +294,12 @@ export const getUserBookmarks = async (req: Request, res: Response): Promise<voi
         api: bookmark.apiId
       }))
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching bookmarks:", error);
-    res.status(500).json({ message: "Failed to fetch bookmarks" });
+    res.status(500).json({ 
+      message: "Failed to fetch bookmarks",
+      error: error.message
+    });
   }
 };
 
