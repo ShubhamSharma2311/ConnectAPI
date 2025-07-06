@@ -7,7 +7,8 @@ const express_1 = __importDefault(require("express"));
 const apiController_1 = require("../controllers/apiController");
 const userController_1 = require("../controllers/userController");
 const router = express_1.default.Router();
-router.get("/apis", apiController_1.getAllAPIs);
+// Public API endpoints
+router.get("/all", apiController_1.getAllAPIs);
+router.get("/trending", userController_1.trendingAPI);
 router.post('/search', userController_1.searchAPIs);
-// Admin API Approval Routes
 exports.default = router;
