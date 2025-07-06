@@ -119,11 +119,69 @@ const UserApiListItem: React.FC<UserApiListItemProps> = ({
   const handleQuickIntegrate = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    // Track the interaction
-    await trackInteraction('quick_integrate');
-    
-    // TODO: Implement quick integration modal/functionality
-    alert(`Quick integration for ${api.name} - Feature coming soon!`);
+    try {
+      // Track the interaction first
+      await trackInteraction('quick_integrate');
+      
+      // Try the API endpoint
+      const response = await axiosClient.post(`/user/try/${api._id}`);
+      
+      // Show the API response in a modal
+      const responseData = JSON.stringify(response.data, null, 2);
+      
+      // Create a modal to show the response
+      const modal = document.createElement('div');
+      modal.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0,0,0,0.8);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          z-index: 10000;
+        ">
+          <div style="
+            background: #1a1a1a;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow: auto;
+            border: 1px solid #333;
+          ">
+            <h3 style="margin-top: 0; color: #10b981;">API Response from ${api.name}</h3>
+            <pre style="
+              background: #0f0f0f;
+              padding: 15px;
+              border-radius: 5px;
+              overflow: auto;
+              font-size: 12px;
+              white-space: pre-wrap;
+            ">${responseData}</pre>
+            <button onclick="this.parentElement.parentElement.remove()" style="
+              margin-top: 15px;
+              background: #6366f1;
+              color: white;
+              border: none;
+              padding: 10px 20px;
+              border-radius: 5px;
+              cursor: pointer;
+            ">Close</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+    } catch (error: any) {
+      console.error('Error with quick integrate:', error);
+      alert(`API Test Failed: ${error.response?.data?.message || 'Failed to test API'}`);
+    }
   };
 
   const handleToggleBookmark = async (e: React.MouseEvent) => {

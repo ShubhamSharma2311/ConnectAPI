@@ -19,6 +19,21 @@ const UserPage: React.FC = () => {
   const [searchMessage, setSearchMessage] = useState("");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [lastSearchQuery, setLastSearchQuery] = useState("");
+  const [trendingApis, setTrendingApis] = useState<APIData[]>([]);
+  const [trendingLoading, setTrendingLoading] = useState(false);
+
+  // Fetch trending APIs
+  const fetchTrendingApis = useCallback(async () => {
+    setTrendingLoading(true);
+    try {
+      const response = await axiosClient.get("/user/trending");
+      setTrendingApis(response.data || []);
+    } catch (error) {
+      console.error("Error fetching trending APIs:", error);
+    } finally {
+      setTrendingLoading(false);
+    }
+  }, []);
 
   // Decode the user token once on mount
   useEffect(() => {
@@ -33,7 +48,10 @@ const UserPage: React.FC = () => {
         console.error("Error decoding user token:", error);
       }
     }
-  }, []);
+    
+    // Fetch trending APIs on mount
+    fetchTrendingApis();
+  }, [fetchTrendingApis]);
 
   // Wrap the search function to ensure a stable reference
   const handleSearch = useCallback(async (query: string) => {
@@ -187,6 +205,49 @@ const UserPage: React.FC = () => {
             </div>
           )}
         </section>
+
+        {/* Trending APIs Section */}
+        {!loading && searchResults.length === 0 && !searchMessage && (
+          <section className="max-w-6xl mx-auto mt-12">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">
+                  🔥 Trending APIs
+                </span>
+              </h2>
+              <p className="text-gray-300">Discover the most popular APIs used by developers</p>
+            </div>
+
+            {trendingLoading ? (
+              <div className="flex justify-center py-8">
+                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : trendingApis.length > 0 ? (
+              <div className="space-y-4">
+                {trendingApis.slice(0, 5).map((api, index) => (
+                  <div 
+                    key={api._id}
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <UserApiListItem
+                      api={api}
+                      isExpanded={expandedId === api._id}
+                      onToggle={() => toggleExpanded(api._id)}
+                      searchQuery=""
+                      position={index}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4">📊</div>
+                <p className="text-gray-400">No trending APIs available at the moment</p>
+              </div>
+            )}
+          </section>
+        )}
       </main>
 
       {/* Enhanced Footer */}
